@@ -1,0 +1,21 @@
+{
+  "name": "serviceregistry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "Start": "nodemon index.js",
+    "production": "NODE_ENV=production nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.2",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.3"
+  }
+}
