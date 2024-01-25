@@ -41,6 +41,7 @@ app.all('/api/:apiName*', async (req, res) => {
                 data: req.body,
                 headers: {
                     user: req.user,
+                    admin: req.admin,
                 },
             }
         )

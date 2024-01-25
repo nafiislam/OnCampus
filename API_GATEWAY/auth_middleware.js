@@ -10,5 +10,10 @@ export default function middleware(req, res, next) {
 
     const { email } = decodedToken;
     req.user = email;
+    const roles = decodedToken.realm_access.roles;
+    req.admin = roles.find(role => role === 'admin')?true:false;
+    console.log('IsAdmin:', req.admin);
+    console.log('email:', req.user);
+
     next();
 }
