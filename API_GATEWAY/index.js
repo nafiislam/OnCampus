@@ -40,7 +40,7 @@ app.all('/api/:apiName*', async (req, res) => {
                 url: `${url.url}${path}`,
                 data: req.body,
                 headers: {
-                    user: req.user,
+                    email: req.email,
                     admin: req.admin,
                 },
             }

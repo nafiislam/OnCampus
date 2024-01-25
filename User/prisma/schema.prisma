@@ -13,27 +13,32 @@ datasource db {
 }
 
 model User {
-  id             String       @id @default(uuid())
-  email          String       @unique
-  name           String?
-  password       String?
-  phoneNumber    String?
-  profilePicture String?
-  posts          Post[]       @relation("WrittenPosts")
-  comments       Comment[]
-  likedPosts     Post[]       @relation("LikedPosts")
-  savedPosts     Post[]       @relation("SavedPosts")
-  viewedPosts    Post[]       @relation("ViewedPosts")
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  role           Role         @default(USER)
-  likedComments  Comment[]    @relation("LikedComments")
-  ClubMember     ClubMember[]
-  session        String
-  batch          String
-  meritPosition  Int
-  department     String
+  id                   String         @id @default(uuid())
+  email                String         @unique
+  name                 String?
+  password             String?
+  phoneNumber          String?
+  profilePicture       String?
+  posts                Post[]         @relation("WrittenPosts")
+  comments             Comment[]
+  likedPosts           Post[]         @relation("LikedPosts")
+  savedPosts           Post[]         @relation("SavedPosts")
+  viewedPosts          Post[]         @relation("ViewedPosts")
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  role                 Role           @default(USER)
+  likedComments        Comment[]      @relation("LikedComments")
+  ClubMember           ClubMember[]
+  session              String
+  batch                String
+  meritPosition        Int
+  department           String
+  VotedOptions         Option[]       @relation("VotedOptions")
+  reminders            Reminder[]
+  createdNotifications Notification[] @relation("createdNotifications")
+  myNotifications      Notification[] @relation("myNotifications")
 
+  @@index([email])
   @@schema("user")
 }
 
@@ -64,22 +69,42 @@ model ClubMember {
 }
 
 model Post {
-  id           String    @id @default(uuid())
-  title        String
-  content      String
-  author       User      @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId     String
-  comments     Comment[]
-  images       String[]
-  anonymous    Boolean
-  tags         Tag[]
-  likedBy      User[]    @relation("LikedPosts")
-  savedBy      User[]    @relation("SavedPosts")
-  viewedBy     User[]    @relation("ViewedPosts")
-  attachments  String[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  commentAllow Boolean   @default(true)
+  id              String        @id @default(uuid())
+  title           String
+  content         String
+  type            String
+  author          User          @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        String
+  comments        Comment[]
+  images          String[]
+  imageNames      String[]
+  anonymous       Boolean
+  isPoll          Boolean
+  options         Option[]
+  tags            Tag[]
+  likedBy         User[]        @relation("LikedPosts")
+  savedBy         User[]        @relation("SavedPosts")
+  viewedBy        User[]        @relation("ViewedPosts")
+  attachments     String[]
+  attachmentNames String[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  commentAllow    Boolean       @default(true)
+  reminders       Reminder[]
+  notification    Notification? @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId  String?      @unique
+
+  @@schema("post")
+}
+
+model Option {
+  optionID  String   @id @default(uuid())
+  title     String
+  votedBy   User[]   @relation("VotedOptions")
+  post      Post     @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@schema("post")
 }
@@ -101,10 +126,48 @@ model Comment {
   @@schema("post")
 }
 
+model Reminder {
+  id        String   @id @default(uuid())
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  createdAt DateTime @default(now())
+  time      String
+  type      ReminderTag
+  post      Post?    @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID    String?
+  status    Boolean  @default(false)
+
+  @@schema("post")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  content     String
+  author      User     @relation("createdNotifications", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  createdAt   DateTime @default(now())
+  type        ReminderTag
+  seen        Boolean  @default(false)
+  belongsTo   User     @relation("myNotifications", fields: [belongsToId], references: [id], onDelete: Cascade)
+  belongsToId String
+  post        Post?
+  
+  @@schema("post")
+}
+
 enum Tag {
   TUITION
   BLOOD
+  DISCUSSION
+  PRODUCT
+  TECH
 
+  @@schema("post")
+}
+
+enum ReminderTag {
+  POST
+  EVENT
   @@schema("post")
 }
 
