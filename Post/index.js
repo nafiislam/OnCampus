@@ -36,6 +36,9 @@ try {
 import getGeneralPost from './Routes/getGeneralPost.js';
 app.use('/getGeneralPost',getGeneralPost);
 
+import createPost from './Routes/createPost.js';
+app.use('/createPost',createPost);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});

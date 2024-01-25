@@ -13,6 +13,10 @@ router.get('/', async(req, res) => {
             name:'Md Muhaiminul Islam Nafi',
             email:`nafiislam964@gmail.com${new Date().getTime()}`,
             password:'123456',
+            batch: '19',
+            session:'2021-22',
+            meritPosition: 16,
+            department: 'CSE',
         }
     })
     res.send({message: 'dashboard', user: req.user});
