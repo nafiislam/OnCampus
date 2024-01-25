@@ -9,26 +9,58 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["user", "post"]
+  schemas  = ["user", "post", "club"]
 }
 
 model User {
-  id             String    @id
-  email          String    @unique
+  id             String       @id @default(uuid())
+  email          String       @unique
   name           String?
-  password       String
+  password       String?
   phoneNumber    String?
   profilePicture String?
-  posts          Post[]    @relation("WrittenPosts")
+  posts          Post[]       @relation("WrittenPosts")
   comments       Comment[]
-  likedPosts     Post[]    @relation("LikedPosts")
-  savedPosts     Post[]    @relation("SavedPosts")
-  viewedPosts    Post[]    @relation("ViewedPosts")
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  role           Role      @default(USER)
-  likedComments  Comment[] @relation("LikedComments")
+  likedPosts     Post[]       @relation("LikedPosts")
+  savedPosts     Post[]       @relation("SavedPosts")
+  viewedPosts    Post[]       @relation("ViewedPosts")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  role           Role         @default(USER)
+  likedComments  Comment[]    @relation("LikedComments")
+  ClubMember     ClubMember[]
+  session        String
+  batch          String
+  meritPosition  Int
+  department     String
+
   @@schema("user")
+}
+
+model Club {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  members     ClubMember[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  images      String[]
+
+  @@schema("club")
+}
+
+model ClubMember {
+  id     String   @id @default(uuid())
+  user   User     @relation(fields: [email], references: [email])
+  email  String
+  club   Club     @relation(fields: [clubId], references: [id])
+  clubId String
+  role   clubRole @default(GENERAL)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("club")
 }
 
 model Post {
@@ -72,6 +104,7 @@ model Comment {
 enum Tag {
   TUITION
   BLOOD
+
   @@schema("post")
 }
 
@@ -80,5 +113,20 @@ enum Role {
   ADMIN
   BR
   CR
+
   @@schema("user")
+}
+
+enum clubRole {
+  PRESIDENT
+  VICE_PRESIDENT
+  GENERAL_SECRETARY
+  ASSISTANT_GENERAL_SECRETARY
+  SECRETARY
+  JOINT_SECRETARY
+  OFFICE_SECRETARY
+  EXECUTIVE
+  GENERAL
+
+  @@schema("club")
 }

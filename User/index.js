@@ -18,23 +18,26 @@ const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'public')));//set the static files dir of express app
 
 //server register
-try {
-    const response = await axios.post('http://localhost:5003/registerService', {
-        serverName: "user",
-        url: `http://localhost:${port}`
-    });
+// try {
+//     const response = await axios.post('http://localhost:5003/registerService', {
+//         serverName: "user",
+//         url: `http://localhost:${port}`
+//     });
 
-    if (response.status !== 200) {
-        console.log(response.data.message);
-        process.exit(0);
-    }
-} catch (error) {
-    console.error("An error occurred while making the request:", error.message);
-    process.exit(0);
-}
+//     if (response.status !== 200) {
+//         console.log(response.data.message);
+//         process.exit(0);
+//     }
+// } catch (error) {
+//     console.error("An error occurred while making the request:", error.message);
+//     process.exit(0);
+// }
 
 import dashboard from'./Routes/dashboard.js';
+import admin from'./Routes/admin.js';
+
 app.use('/dashboard',dashboard);
+app.use('/admin',admin);
 
 //404 error handler
 app.use((req, res, next) => {
@@ -72,19 +75,19 @@ process.on('unhandledRejection', (reason, promise) => {
 // Graceful shutdown function
 async function gracefulShutdown() {
     console.log('Received shutdown signal. Closing connections and cleaning up...');
-    try {
-        const response = await axios.post('http://localhost:5003/unRegisterService', {
-            serverName: "user",
-        });
+    // try {
+    //     const response = await axios.post('http://localhost:5003/unRegisterService', {
+    //         serverName: "user",
+    //     });
     
-        if (response.status !== 200) {
-            console.log(response.data.message);
-            process.exit(0);
-        }
-    } catch (error) {
-        console.error("An error occurred while making the request:", error.message);
-        process.exit(0);
-    }
+    //     if (response.status !== 200) {
+    //         console.log(response.data.message);
+    //         process.exit(0);
+    //     }
+    // } catch (error) {
+    //     console.error("An error occurred while making the request:", error.message);
+    //     process.exit(0);
+    // }
     // Exit the process
     process.exit(0);
 }
