@@ -10,7 +10,7 @@ const app = express();
 const port = 5001;
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cokieParser());
 app.use(cors_middleware);
 
@@ -18,43 +18,43 @@ const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'public')));//set the static files dir of express app
 
 //server register
-// try {
-//     const response = await axios.post('http://localhost:5003/registerService', {
-//         serverName: "user",
-//         url: `http://localhost:${port}`
-//     });
+try {
+    const response = await axios.post('http://localhost:5003/registerService', {
+        serverName: "user",
+        url: `http://localhost:${port}`
+    });
 
-//     if (response.status !== 200) {
-//         console.log(response.data.message);
-//         process.exit(0);
-//     }
-// } catch (error) {
-//     console.error("An error occurred while making the request:", error.message);
-//     process.exit(0);
-// }
+    if (response.status !== 200) {
+        console.log(response.data.message);
+        process.exit(0);
+    }
+} catch (error) {
+    console.error("An error occurred while making the request:", error.message);
+    process.exit(0);
+}
 
-import dashboard from'./Routes/dashboard.js';
-import admin from'./Routes/admin.js';
+import dashboard from './Routes/dashboard.js';
+import admin from './Routes/admin.js';
 
-app.use('/dashboard',dashboard);
-app.use('/admin',admin);
+app.use('/dashboard', dashboard);
+app.use('/admin', admin);
 
 //404 error handler
 app.use((req, res, next) => {
-    res.status(404).json({message: "Not Found"});
+    res.status(404).json({ message: "Not Found" });
 });
 
 //custom error handler
 app.use((err, req, res, next) => {
     console.error(err);
-    if(res.headersSent){
+    if (res.headersSent) {
         next(err);//if headers already sent, pass the error to the default error handler
     }
-    if(err.message){
-        res.status(500).json({message: err.message});
+    if (err.message) {
+        res.status(500).json({ message: err.message });
     }
-    else{
-        res.status(500).json({message: "There was an Error"});
+    else {
+        res.status(500).json({ message: "There was an Error" });
     }
 });
 
@@ -75,19 +75,19 @@ process.on('unhandledRejection', (reason, promise) => {
 // Graceful shutdown function
 async function gracefulShutdown() {
     console.log('Received shutdown signal. Closing connections and cleaning up...');
-    // try {
-    //     const response = await axios.post('http://localhost:5003/unRegisterService', {
-    //         serverName: "user",
-    //     });
-    
-    //     if (response.status !== 200) {
-    //         console.log(response.data.message);
-    //         process.exit(0);
-    //     }
-    // } catch (error) {
-    //     console.error("An error occurred while making the request:", error.message);
-    //     process.exit(0);
-    // }
+    try {
+        const response = await axios.post('http://localhost:5003/unRegisterService', {
+            serverName: "user",
+        });
+
+        if (response.status !== 200) {
+            console.log(response.data.message);
+            process.exit(0);
+        }
+    } catch (error) {
+        console.error("An error occurred while making the request:", error.message);
+        process.exit(0);
+    }
     // Exit the process
     process.exit(0);
 }

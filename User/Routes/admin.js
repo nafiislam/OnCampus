@@ -74,27 +74,41 @@ router.post('/createUser', async (req, res) => {
 });
 
 router.post('/createClub', async (req, res) => {
+    // console.log(req)
+
     console.log(req.body)
     const clubName = req.body.clubName
     const members = req.body.members
-    const newClub = await prisma.club.create({
-        data: {
-            name: clubName,
-            members: {
-                createMany: {
-                    data: members.map((member) => ({
-                        role: clubRole[member.role.toUpperCase()],
-                        email: member.email,
-                    })),
+    let message = ""
+    try {
+        const newClub = await prisma.club.create({
+            data: {
+                name: clubName,
+                members: {
+                    createMany: {
+                        data: members.map((member) => ({
+                            role: clubRole[member.role.toUpperCase()],
+                            email: member.email,
+                        })),
+                    },
                 },
             },
-        },
-        include: {
-            members: true, // Include the members in the response
-        },
-    });
-    console.log(newClub)
-    res.send({ message: 'club successfully created' });
+            include: {
+                members: true, // Include the members in the response
+            },
+        });
+        console.log(newClub)
+        message = 'club successfully created'
+    } catch (error) {
+        // Handle the error
+        console.error('Error during transaction:', error);
+        message = 'bad request'
+    } finally {
+        // Ensure that the Prisma client is properly disconnected
+        await prisma.$disconnect();
+    }
+
+    res.send({ message: message });
 });
 
 export default router;
