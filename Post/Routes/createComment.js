@@ -4,16 +4,6 @@ import prisma from '../db.js'
 import getRegistry from '../server.js'
 import axios from 'axios';
 const router = express.Router();
-function processNestedComments(comments){
-    let groupedComments = {}
-    comments.forEach(comment => {
-        if(!groupedComments[comment.parentCommentID]){
-            groupedComments[comment.parentCommentID] = []
-        }
-        groupedComments[comment.parentCommentID].push(comment)
-    })
-    return groupedComments
-}
 
 router.post('/comment', async(req, res) => {
     try{
@@ -35,6 +25,26 @@ router.post('/comment', async(req, res) => {
 
         if (user_id === '-1') {
             res.status(400).json({message: "User not found"});
+            return;
+        }
+
+        if(content==undefined || pid==undefined || cid==undefined){
+            res.status(400).json({message: "Content, post id and comment id are required"});
+            return;
+        }
+
+        if (content === "") {
+            res.status(400).json({message: "Content is required"});
+            return;
+        }
+
+        if (pid === "") {
+            res.status(400).json({message: "Post id is required"});
+            return;
+        }
+
+        if (cid === "") {
+            res.status(400).json({message: "Comment id is required"});
             return;
         }
 
@@ -103,6 +113,21 @@ router.post('/post', async(req, res) => {
 
         if (user_id === '-1') {
             res.status(400).json({message: "User not found"});
+            return;
+        }
+
+        if(content==undefined || pid==undefined){
+            res.status(400).json({message: "Content, post id are required"});
+            return;
+        }
+
+        if (content === "") {
+            res.status(400).json({message: "Content is required"});
+            return;
+        }
+
+        if (pid === "") {
+            res.status(400).json({message: "Post id is required"});
             return;
         }
 

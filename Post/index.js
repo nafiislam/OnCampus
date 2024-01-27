@@ -42,6 +42,15 @@ app.use('/getPost',getPost);
 import createComment from './Routes/createComment.js';
 app.use('/createComment',createComment);
 
+import like from './Routes/like.js';
+app.use('/like',like);
+
+import save from './Routes/save.js';
+app.use('/save',save);
+
+import vote from './Routes/vote.js';
+app.use('/vote',vote);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});

@@ -26,6 +26,11 @@ router.post('/', async(req, res) => {
           options,
           imgList,
           list} = req.body;
+
+        if(title==undefined || content==undefined || postType==undefined || isComment==undefined || isNotify==undefined || isAnonymous==undefined || reminderCheck==undefined || reminder==undefined || discussionCheck==undefined || bloodCheck==undefined || tutionCheck==undefined || productCheck==undefined || techCheck==undefined || pollCheck==undefined || options==undefined || imgList==undefined || list==undefined){
+            res.status(400).json({message: "All fields are required"});
+            return;
+        }
       
       if(!email){
           res.status(401).json({message: "Unauthorized"});

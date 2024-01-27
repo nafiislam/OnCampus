@@ -4,16 +4,7 @@ import prisma from '../db.js'
 import getRegistry from '../server.js'
 import axios from 'axios';
 const router = express.Router();
-function processNestedComments(comments){
-    let groupedComments = {}
-    comments.forEach(comment => {
-        if(!groupedComments[comment.parentCommentID]){
-            groupedComments[comment.parentCommentID] = []
-        }
-        groupedComments[comment.parentCommentID].push(comment)
-    })
-    return groupedComments
-}
+
 router.post('/', async(req, res) => {
     try{
         console.log(req.body);
@@ -36,6 +27,18 @@ router.post('/', async(req, res) => {
             res.status(400).json({message: "User not found"});
             return;
         }
+
+        const user = await prisma.user.findUnique({
+            where:{
+                id:user_id
+            },
+            select:{
+                id:true,
+                name:true,
+                email:true,
+                profilePicture:true,
+            }
+        })
 
         var post = await prisma.post.findUnique({
             where:{
@@ -126,17 +129,10 @@ router.post('/', async(req, res) => {
             }
         })
 
-        // post = {
-        //     ...post,
-        //     comments: processNestedComments(post.comments)
-        // }
-
         post = {
             ...post,
-            email: email
+            user: user,
         }
-
-        // console.log(post);
 
         res.status(200).json({post});
     }
