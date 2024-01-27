@@ -33,11 +33,14 @@ try {
     process.exit(0);
 }
 
-import getGeneralPost from './Routes/getGeneralPost.js';
-app.use('/getGeneralPost',getGeneralPost);
-
 import createPost from './Routes/createPost.js';
 app.use('/createPost',createPost);
+
+import getPost from './Routes/getPost.js';
+app.use('/getPost',getPost);
+
+import createComment from './Routes/createComment.js';
+app.use('/createComment',createComment);
 
 //404 error handler
 app.use((req, res, next) => {
