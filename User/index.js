@@ -33,13 +33,12 @@ try {
     process.exit(0);
 }
 
-import dashboard from'./Routes/dashboard.js';
-app.use('/dashboard',dashboard);
 import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
 app.use('/getUserIDByEmail',getUserIDByEmail);
 import getUserIDsByType from'./Routes/getUserIDsByType.js';
 app.use('/getUserIDsByType',getUserIDsByType);
-
+import admin from './Routes/admin.js';
+app.use('/admin', admin);
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
