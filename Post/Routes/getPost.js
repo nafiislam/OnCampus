@@ -27,7 +27,7 @@ router.post('/', async(req, res) => {
             res.status(400).json({message: "User not found"});
             return;
         }
-
+        //have to shift to user service
         const user = await prisma.user.findUnique({
             where:{
                 id:user_id
@@ -96,6 +96,9 @@ router.post('/', async(req, res) => {
                                 email:true,
                             }
                         }
+                    },
+                    orderBy:{
+                        createdAt:'desc'
                     }
                 },
                 tags:true,
@@ -133,6 +136,19 @@ router.post('/', async(req, res) => {
             ...post,
             user: user,
         }
+
+        await prisma.post.update({
+            where:{
+                id:id
+            },
+            data:{
+                viewedBy:{
+                    connect:{
+                        id:user_id
+                    }
+                }
+            }
+        })
 
         res.status(200).json({post});
     }

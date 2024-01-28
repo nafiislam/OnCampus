@@ -62,7 +62,7 @@ router.post('/', async(req, res) => {
                 }
             })
         }
-        else if(type === "Batch Dept"){
+        else if(type === "BatchDept"){
             users = await prisma.user.findMany({
                 where:{
                     batch: batch,

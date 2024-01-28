@@ -51,6 +51,9 @@ app.use('/save',save);
 import vote from './Routes/vote.js';
 app.use('/vote',vote);
 
+import getPosts from './Routes/getPosts.js';
+app.use('/getPosts',getPosts);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
