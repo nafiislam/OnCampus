@@ -1,10 +1,55 @@
 import express from 'express'
 import { Tag, Role, clubRole } from '@prisma/client'
 import prisma from '../db.js'
+import validateRequest from './validateRequest.js'
 
 const router = express.Router();
 
+router.use(validateRequest);
+
 async function createUser(user) {
+
+    const {
+        name,
+        id,
+        batch,
+        department,
+        session,
+        meritPosition,
+        clubRoles
+    } = req.body;
+
+    if (name == undefined || id == undefined || batch == undefined || department == undefined || session == undefined || meritPosition == undefined || clubRoles == undefined) {
+        return { message: "All fields are required" };
+    }
+
+    if (name === "") {
+        return { message: "Name is required" };
+    }
+
+    if (id === "") {
+        return { message: "ID is required" };
+    }
+
+    if (batch === "") {
+        return { message: "Batch is required" };
+    }
+
+    if (department === "") {
+        return { message: "Department is required" };
+    }
+
+    if (session === "") {
+        return { message: "Session is required" };
+    }
+
+    if (meritPosition === "") {
+        return { message: "Merit Position is required" };
+    }
+
+    if (!Array.isArray(clubRoles)) {
+        return { message: "Invalid request body" };
+    }
 
     try {
         await prisma.$transaction(async (tx) => {
@@ -65,6 +110,7 @@ async function createUser(user) {
 
 router.post('/createUser', async (req, res) => {
     console.log(req.body)
+    console.log(req.headers)
 
     const user = req.body
     const msg = await createUser(user)
@@ -74,11 +120,23 @@ router.post('/createUser', async (req, res) => {
 });
 
 router.post('/createClub', async (req, res) => {
-    // console.log(req)
-
     console.log(req.body)
+
     const clubName = req.body.clubName
     const members = req.body.members
+
+    if (clubName == undefined || members == undefined) {
+        res.send({ message: "All fields are required" });
+    }
+
+    if (clubName === "") {
+        res.send({ message: "Club Name is required" });
+    }
+
+    if (!Array.isArray(members)) {
+        res.send({ message: "Invalid request body" });
+    }
+
     let message = ""
     try {
         const newClub = await prisma.club.create({
