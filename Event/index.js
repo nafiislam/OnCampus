@@ -7,7 +7,7 @@ import axios from 'axios';
 
 dotenv.config();
 const app = express();
-const port = 5001;
+const port = 5004;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));//set the static files d
 //server register
 try {
     const response = await axios.post('http://localhost:5003/registerService', {
-        serverName: "user",
+        serverName: "event",
         url: `http://localhost:${port}`
     });
 
@@ -33,16 +33,6 @@ try {
     process.exit(0);
 }
 
-import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
-app.use('/getUserIDByEmail',getUserIDByEmail);
-import getUserIDsByType from'./Routes/getUserIDsByType.js';
-app.use('/getUserIDsByType',getUserIDsByType);
-import admin from './Routes/admin.js';
-app.use('/admin', admin);
-import profile from'./Routes/profile.js';
-app.use('/profile',profile);
-import getUser from'./Routes/getUser.js';
-app.use('/getUser',getUser);
 
 //404 error handler
 app.use((req, res, next) => {
