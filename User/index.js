@@ -10,7 +10,7 @@ const app = express();
 const port = 5001;
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cokieParser());
 app.use(cors_middleware);
 
@@ -33,28 +33,28 @@ try {
     process.exit(0);
 }
 
-import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
-app.use('/getUserIDByEmail',getUserIDByEmail);
-import getUserIDsByType from'./Routes/getUserIDsByType.js';
-app.use('/getUserIDsByType',getUserIDsByType);
+import getUserIDByEmail from './Routes/getUserIDByEmail.js';
+app.use('/getUserIDByEmail', getUserIDByEmail);
+import getUserIDsByType from './Routes/getUserIDsByType.js';
+app.use('/getUserIDsByType', getUserIDsByType);
 import admin from './Routes/admin.js';
 app.use('/admin', admin);
 //404 error handler
 app.use((req, res, next) => {
-    res.status(404).json({message: "Not Found"});
+    res.status(404).json({ message: "Not Found" });
 });
 
 //custom error handler
 app.use((err, req, res, next) => {
     console.error(err);
-    if(res.headersSent){
+    if (res.headersSent) {
         next(err);//if headers already sent, pass the error to the default error handler
     }
-    if(err.message){
-        res.status(500).json({message: err.message});
+    if (err.message) {
+        res.status(500).json({ message: err.message });
     }
-    else{
-        res.status(500).json({message: "There was an Error"});
+    else {
+        res.status(500).json({ message: "There was an Error" });
     }
 });
 
@@ -79,7 +79,7 @@ async function gracefulShutdown() {
         const response = await axios.post('http://localhost:5003/unRegisterService', {
             serverName: "user",
         });
-    
+
         if (response.status !== 200) {
             console.log(response.data.message);
             process.exit(0);
