@@ -23,6 +23,7 @@ model User {
   likedPosts           Post[]         @relation("LikedPosts")
   savedPosts           Post[]         @relation("SavedPosts")
   viewedPosts          Post[]         @relation("ViewedPosts")
+  intPosts             Post[]         @relation("IntPosts")
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   role                 Role           @default(USER)
@@ -55,9 +56,9 @@ model Club {
 
 model ClubMember {
   id     String   @id @default(uuid())
-  user   User     @relation(fields: [email], references: [email],onDelete: Cascade)
+  user   User     @relation(fields: [email], references: [email], onDelete: Cascade)
   email  String
-  club   Club     @relation(fields: [clubId], references: [id],onDelete: Cascade)
+  club   Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
   clubId String
   role   clubRole @default(GENERAL)
 
@@ -84,6 +85,7 @@ model Post {
   likedBy         User[]        @relation("LikedPosts")
   savedBy         User[]        @relation("SavedPosts")
   viewedBy        User[]        @relation("ViewedPosts")
+  intBy           User[]        @relation("IntPosts")
   attachments     String[]
   attachmentNames String[]
   createdAt       DateTime      @default(now())
@@ -91,6 +93,55 @@ model Post {
   commentAllow    Boolean       @default(true)
   reminders       Reminder[]
   notification    Notification?
+  open            Boolean       @default(true)
+
+  bloodInfo   BloodInfo?
+  tuitionInfo TuitionInfo?
+  productInfo ProductInfo?
+
+  @@schema("post")
+}
+
+model BloodInfo {
+  id           String @id @default(uuid())
+  bloodGroup   String
+  units        Int
+  hospital     String
+  contact      String
+  time         String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
+
+  @@schema("post")
+}
+
+model TuitionInfo {
+  id               String @id @default(uuid())
+  genderPreference String
+  location         String
+  class            String
+  member           Int
+  subject          String
+  time             Int
+  medium           String
+  salary           Int
+  contact          String
+  studentInstitute String
+  gender           String
+  parentPost       Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId     String @unique
+
+  @@schema("post")
+}
+
+model ProductInfo {
+  id           String @id @default(uuid())
+  type         String
+  name         String
+  price        Int
+  contact      String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
 
   @@schema("post")
 }
@@ -159,7 +210,6 @@ enum Tag {
   BLOOD
   DISCUSSION
   PRODUCT
-  TECH
 
   @@schema("post")
 }
