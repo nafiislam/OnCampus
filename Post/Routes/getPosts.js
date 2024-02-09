@@ -95,7 +95,8 @@ router.post('/General', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -154,7 +155,8 @@ router.post('/General', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -258,7 +260,8 @@ router.post('/Batch', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -314,7 +317,8 @@ router.post('/Batch', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -418,7 +422,8 @@ router.post('/Dept', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -474,7 +479,8 @@ router.post('/Dept', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -581,7 +587,8 @@ router.post('/BatchDept', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }
@@ -640,7 +647,8 @@ router.post('/BatchDept', async(req, res) => {
                     commentAllow:true,
                     bloodInfo:true,
                     tuitionInfo:true,
-                    productInfo:true
+                    productInfo:true,
+                    open:true,
                 }
             })
         }

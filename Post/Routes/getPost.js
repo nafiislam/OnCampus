@@ -37,6 +37,7 @@ router.post('/', async(req, res) => {
                 name:true,
                 email:true,
                 profilePicture:true,
+                role:true
             }
         })
 
@@ -139,7 +140,8 @@ router.post('/', async(req, res) => {
                 commentAllow:true,
                 bloodInfo:true,
                 tuitionInfo:true,
-                productInfo:true
+                productInfo:true,
+                open:true,
             }
         })
 
