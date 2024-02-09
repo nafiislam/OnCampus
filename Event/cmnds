@@ -1,0 +1,18 @@
+npm init -y
+npm i --save-dev prisma typescript ts-node @types/node nodemon
+npx prisma init --datasource-provider postgresql
+npx prisma format
+npx prisma migrate dev --name init
+npm i @prisma/client
+npx prisma generate
+
+to resolve not empty conflict:
+1. If you have a prisma/migrations folder, delete, move, rename, or archive this folder.
+2. mkdir -p prisma/migrations/0_init
+
+3. npx prisma migrate diff \
+--from-empty \
+--to-schema-datamodel prisma/schema.prisma \
+--script > prisma/migrations/0_init/migration.sql
+
+4. npx prisma migrate resolve --applied 0_init
