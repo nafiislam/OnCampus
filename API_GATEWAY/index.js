@@ -31,7 +31,7 @@ app.all('/api/:apiName*', async (req, res) => {
     console.log('apiName', req.params.apiName);
     const { apiName } = req.params;
     const path = req.params[0];
-    
+    console.log('path', path);
     const url = await getRegistry(apiName)
     if (url) {
         axios(
@@ -45,39 +45,40 @@ app.all('/api/:apiName*', async (req, res) => {
                 },
             }
         )
-        .then((response) => {
-             // Save cookies from the response to the gateway's response
-            if (response.headers['set-cookie']) {
-                res.set('Set-Cookie', response.headers['set-cookie']);
-            }
-            res.send(response.data);
-        })
-        .catch((e) => {
-            console.error(e);
-            res.status(500).json({message: "Internal Server Error"});
-        });
+            .then((response) => {
+                // Save cookies from the response to the gateway's response
+                if (response.headers['set-cookie']) {
+                    res.set('Set-Cookie', response.headers['set-cookie']);
+                }
+                res.send(response.data);
+            })
+            .catch((e) => {
+                // console.error(e);
+
+                res.status(500).json({ message: "Internal Server Error" });
+            });
     }
-    else{
-        res.status(404).json({message: "Not Found"});
+    else {
+        res.status(404).json({ message: "Not Found" });
     }
 });
 
 //404 error handler
 app.use((req, res, next) => {
-    res.status(404).json({message: "Not Found"});
+    res.status(404).json({ message: "Not Found" });
 });
 
 //custom error handler
 app.use((err, req, res, next) => {
     console.error(err);
-    if(res.headersSent){
+    if (res.headersSent) {
         next(err);//if headers already sent, pass the error to the default error handler
     }
-    if(err.message){
-        res.status(500).json({message: err.message});
+    if (err.message) {
+        res.status(500).json({ message: err.message });
     }
-    else{
-        res.status(500).json({message: "There was an Error"});
+    else {
+        res.status(500).json({ message: "There was an Error" });
     }
 });
 
