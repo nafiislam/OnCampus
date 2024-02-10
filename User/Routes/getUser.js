@@ -26,7 +26,7 @@ router.get('/', async(req, res) => {
                 role:true,
             }
         })
-        console.log(user);
+
         if(user.length === 0 || user.length > 1){
             res.status(400).json({message: "User not found"});
             return;
