@@ -13,7 +13,7 @@ router.get('/new', async(req, res) => {
             res.status(401).json({message: "Unauthorized"});
             return;
         }
-        
+
         const user_url = await getRegistry("user");
         const user_id_res = await axios.post(`${user_url.url}/getUserIDByEmail`, {
             email: email,

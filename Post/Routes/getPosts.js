@@ -41,8 +41,16 @@ router.post('/General', async(req, res) => {
                 name:true,
                 email:true,
                 profilePicture:true,
+                accessGeneral: true,
             }
         })
+
+        if(user.accessGeneral === "BANNED"){
+            res.status(400).json({message: "You don't have access to this feature"});
+            return;
+        }
+
+        console.log(user); 
 
         if(type === "all"){
             var posts = await prisma.post.findMany({
@@ -208,9 +216,14 @@ router.post('/Batch', async(req, res) => {
                 id:true,
                 name:true,
                 email:true,
-                profilePicture:true,
+                accessBatch:true,
             }
         })
+        
+        if(user.accessBatch === "BANNED"){
+            res.status(400).json({message: "You don't have access to this feature"});
+            return;
+        }
 
         if(type === "all"){
             var posts = await prisma.post.findMany({
@@ -371,8 +384,14 @@ router.post('/Dept', async(req, res) => {
                 name:true,
                 email:true,
                 profilePicture:true,
+                accessDept:true,
             }
         })
+
+        if(user.accessDept === "BANNED"){
+            res.status(400).json({message: "You don't have access to this feature"});
+            return;
+        }
 
         if(type === "all"){
             var posts = await prisma.post.findMany({
@@ -533,8 +552,14 @@ router.post('/BatchDept', async(req, res) => {
                 name:true,
                 email:true,
                 profilePicture:true,
+                accessDeptBatch:true
             }
         })
+
+        if(user.accessDeptBatch === "BANNED"){
+            res.status(400).json({message: "You don't have access to this feature"});
+            return;
+        }
 
         if(type === "all"){
             var posts = await prisma.post.findMany({

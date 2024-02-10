@@ -85,7 +85,8 @@ router.post('/', async(req, res) => {
       if(radio=="BLOOD"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -114,7 +115,8 @@ router.post('/', async(req, res) => {
       else if(radio=="TUITION"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -149,7 +151,8 @@ router.post('/', async(req, res) => {
       else if(radio=="PRODUCT"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -175,10 +178,11 @@ router.post('/', async(req, res) => {
         });
       }
       else{
-        console.log("discussion");
+
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
