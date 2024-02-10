@@ -1,13 +1,13 @@
-import express from 'express';
+import axios from 'axios';
 import cokieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import cors_middleware from './cors_middleware.js';
+import express from 'express';
 import path from 'path';
-import axios from 'axios';
+import cors_middleware from './cors_middleware.js';
 
 dotenv.config();
 const app = express();
-const port = 5001;
+const port = 5004;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));//set the static files d
 //server register
 try {
     const response = await axios.post('http://localhost:5003/registerService', {
-        serverName: "user",
+        serverName: "event",
         url: `http://localhost:${port}`
     });
 
@@ -33,12 +33,15 @@ try {
     process.exit(0);
 }
 
-import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
-app.use('/getUserIDByEmail',getUserIDByEmail);
-import getUserIDsByType from'./Routes/getUserIDsByType.js';
-app.use('/getUserIDsByType',getUserIDsByType);
-import admin from './Routes/admin.js';
-app.use('/admin', admin);
+import createEvent from './Routes/createEvent.js';
+app.use('/createEvent',createEvent);
+
+import getEvent from './Routes/getEvent.js';
+app.use('/getEvent',getEvent);
+
+import getEvents from './Routes/getEvents.js';
+app.use('/getEvents',getEvents);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
@@ -77,7 +80,7 @@ async function gracefulShutdown() {
     console.log('Received shutdown signal. Closing connections and cleaning up...');
     try {
         const response = await axios.post('http://localhost:5003/unRegisterService', {
-            serverName: "user",
+            serverName: "event",
         });
     
         if (response.status !== 200) {

@@ -11,24 +11,24 @@ datasource db {
 }
 
 model Event {
-  id              String      @id @default(uuid())
-  title           String
-  description     String
-  startDate       DateTime
-  finishDate      DateTime?
-  eventType       MeetingType
-  location        String?
-  onlineLink      String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  organizers      String
-  Sponsors        String?
-  registration    String?
-  rules           String?
-  prizes          String?
-  timeline        Timeline[]
-  resources       Resources[]
-  tag             Tag
+  id           String      @id @default(uuid())
+  title        String
+  description  String
+  startDate    DateTime
+  finishDate   DateTime?
+  eventType    MeetingType
+  location     String?
+  onlineLink   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  organizers   String
+  Sponsors     String?
+  registration String?
+  rules        String?
+  prizes       String?
+  timeline     Timeline[]
+  resources    Resources[]
+  tag          Tag
 }
 
 model Resources {
