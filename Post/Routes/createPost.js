@@ -268,7 +268,6 @@ router.post('/', async(req, res) => {
         });
       }
       
-
       if(reminderCheck){
         const rem_res = await prisma.reminder.create({
           data:{
@@ -299,7 +298,7 @@ router.post('/', async(req, res) => {
             users.forEach(async (user) => {
                 await prisma.notification.create({
                     data: {
-                        content: 'New Post by '+user_id,
+                        content: `New Post in ${postType}`,
                         type: ReminderTag.POST,
                         post: {
                             connect: {

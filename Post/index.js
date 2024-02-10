@@ -72,6 +72,9 @@ app.use('/deleteComment',deleteComment);
 import updateComment from './Routes/updateComment.js';
 app.use('/updateComment',updateComment);
 
+import getNotification from './Routes/getNotification.js';
+app.use('/getNotification',getNotification);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
