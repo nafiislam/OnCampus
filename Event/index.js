@@ -1,9 +1,9 @@
-import express from 'express';
+import axios from 'axios';
 import cokieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import cors_middleware from './cors_middleware.js';
+import express from 'express';
 import path from 'path';
-import axios from 'axios';
+import cors_middleware from './cors_middleware.js';
 
 dotenv.config();
 const app = express();
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));//set the static files d
 try {
     const response = await axios.post('http://localhost:5003/registerService', {
         serverName: "event",
-        url: `http://localhost:${port}`
+        url: http://localhost:${port}
     });
 
     if (response.status !== 200) {
@@ -33,6 +33,14 @@ try {
     process.exit(0);
 }
 
+import createEvent from './Routes/createEvent.js';
+app.use('/createEvent',createEvent);
+
+import getEvent from './Routes/getEvent.js';
+app.use('/getEvent',getEvent);
+
+import getEvents from './Routes/getEvents.js';
+app.use('/getEvents',getEvents);
 
 //404 error handler
 app.use((req, res, next) => {
@@ -54,7 +62,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`)
+    console.log(Example app listening on port ${port}!)
 });
 
 // Listen for termination and interrupt signals
@@ -72,7 +80,7 @@ async function gracefulShutdown() {
     console.log('Received shutdown signal. Closing connections and cleaning up...');
     try {
         const response = await axios.post('http://localhost:5003/unRegisterService', {
-            serverName: "user",
+            serverName: "event",
         });
     
         if (response.status !== 200) {
