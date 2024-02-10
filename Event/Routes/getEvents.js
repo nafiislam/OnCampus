@@ -93,10 +93,6 @@ router.post('/General', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -153,10 +149,6 @@ router.post('/General', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -258,10 +250,6 @@ router.post('/Batch', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -315,10 +303,6 @@ router.post('/Batch', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -420,10 +404,6 @@ router.post('/Dept', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -477,10 +457,6 @@ router.post('/Dept', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
@@ -585,14 +561,10 @@ router.post('/BatchDept', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }
-        else if(type=="TUITION"||type=="BLOOD"||type=="DISCUSSION"||type=="PRODUCT"){
+        else if(type=="TUITION"||type=="BLOOD"||type=="DISCUSSION"||type=="PRODUCT"||type=="TECH"){
             var posts = await prisma.post.findMany({
                 where:{
                     type:{
@@ -645,10 +617,6 @@ router.post('/BatchDept', async(req, res) => {
                     createdAt:true,
                     updatedAt:true,
                     commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
                 }
             })
         }

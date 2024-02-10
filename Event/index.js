@@ -1,16 +1,16 @@
-import express from 'express';
+import axios from 'axios';
 import cokieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import cors_middleware from './cors_middleware.js';
+import express from 'express';
 import path from 'path';
-import axios from 'axios';
+import cors_middleware from './cors_middleware.js';
 
 dotenv.config();
 const app = express();
-const port = 5001;
+const port = 5004;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(cokieParser());
 app.use(cors_middleware);
 
@@ -20,8 +20,8 @@ app.use(express.static(path.join(__dirname, 'public')));//set the static files d
 //server register
 try {
     const response = await axios.post('http://localhost:5003/registerService', {
-        serverName: "user",
-        url: `http://localhost:${port}`
+        serverName: "event",
+        url: http://localhost:${port}
     });
 
     if (response.status !== 200) {
@@ -33,51 +33,36 @@ try {
     process.exit(0);
 }
 
-import user from './Routes/user.js';
-app.use('/', user);
+import createEvent from './Routes/createEvent.js';
+app.use('/createEvent',createEvent);
 
-import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
-app.use('/getUserIDByEmail',getUserIDByEmail);
+import getEvent from './Routes/getEvent.js';
+app.use('/getEvent',getEvent);
 
-import getUserIDsByType from'./Routes/getUserIDsByType.js';
-app.use('/getUserIDsByType',getUserIDsByType);
-
-import admin from './Routes/admin.js';
-app.use('/admin', admin);
-
-import profile from'./Routes/profile.js';
-app.use('/profile',profile);
-
-import getUser from'./Routes/getUser.js';
-app.use('/getUser',getUser);
-
-import postUserAuth from'./Routes/postUserAuth.js';
-app.use('/postUserAuth',postUserAuth);
-
-import commentUserAuth from'./Routes/commentUserAuth.js';
-app.use('/commentUserAuth',commentUserAuth);
+import getEvents from './Routes/getEvents.js';
+app.use('/getEvents',getEvents);
 
 //404 error handler
 app.use((req, res, next) => {
-    res.status(404).json({ message: "Not Found" });
+    res.status(404).json({message: "Not Found"});
 });
 
 //custom error handler
 app.use((err, req, res, next) => {
     console.error(err);
-    if (res.headersSent) {
+    if(res.headersSent){
         next(err);//if headers already sent, pass the error to the default error handler
     }
-    if (err.message) {
-        res.status(500).json({ message: err.message });
+    if(err.message){
+        res.status(500).json({message: err.message});
     }
-    else {
-        res.status(500).json({ message: "There was an Error" });
+    else{
+        res.status(500).json({message: "There was an Error"});
     }
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`)
+    console.log(Example app listening on port ${port}!)
 });
 
 // Listen for termination and interrupt signals
@@ -95,9 +80,9 @@ async function gracefulShutdown() {
     console.log('Received shutdown signal. Closing connections and cleaning up...');
     try {
         const response = await axios.post('http://localhost:5003/unRegisterService', {
-            serverName: "user",
+            serverName: "event",
         });
-
+    
         if (response.status !== 200) {
             console.log(response.data.message);
             process.exit(0);

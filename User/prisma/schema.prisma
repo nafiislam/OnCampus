@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["user", "post", "club"]
+  schemas  = ["user", "post", "club", "event"]
 }
 
 model User {
@@ -23,13 +23,13 @@ model User {
   likedPosts           Post[]         @relation("LikedPosts")
   savedPosts           Post[]         @relation("SavedPosts")
   viewedPosts          Post[]         @relation("ViewedPosts")
+  intPosts             Post[]         @relation("IntPosts")
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   role                 Role           @default(USER)
   likedComments        Comment[]      @relation("LikedComments")
   ClubMember           ClubMember[]
   session              String
-  batchRef             Batch          @relation(fields: [batch], references: [batchName])
   batch                String
   meritPosition        Int
   department           dept
@@ -37,6 +37,8 @@ model User {
   reminders            Reminder[]
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
+
+  batchRef             Batch          @relation(fields: [batch], references: [batchName])
   address              String?
   bloodGroup           String?
   dateOfBirth          DateTime?
@@ -56,7 +58,6 @@ model Batch {
   id        String @id @default(uuid())
   batchName String @unique
   User      User[]
-
   @@schema("user")
 }
 
@@ -103,6 +104,7 @@ model Post {
   likedBy         User[]        @relation("LikedPosts")
   savedBy         User[]        @relation("SavedPosts")
   viewedBy        User[]        @relation("ViewedPosts")
+  intBy           User[]        @relation("IntPosts")
   attachments     String[]
   attachmentNames String[]
   createdAt       DateTime      @default(now())
@@ -110,6 +112,55 @@ model Post {
   commentAllow    Boolean       @default(true)
   reminders       Reminder[]
   notification    Notification?
+  open            Boolean       @default(true)
+
+  bloodInfo   BloodInfo?
+  tuitionInfo TuitionInfo?
+  productInfo ProductInfo?
+
+  @@schema("post")
+}
+
+model BloodInfo {
+  id           String @id @default(uuid())
+  bloodGroup   String
+  units        Int
+  hospital     String
+  contact      String
+  time         String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
+
+  @@schema("post")
+}
+
+model TuitionInfo {
+  id               String @id @default(uuid())
+  genderPreference String
+  location         String
+  class            String
+  member           Int
+  subject          String
+  time             Int
+  medium           String
+  salary           Int
+  contact          String
+  studentInstitute String
+  gender           String
+  parentPost       Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId     String @unique
+
+  @@schema("post")
+}
+
+model ProductInfo {
+  id           String @id @default(uuid())
+  type         String
+  name         String
+  price        Int
+  contact      String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
 
   @@schema("post")
 }
@@ -176,16 +227,15 @@ model Notification {
 enum Access {
   BANNED
   UNBANNED
-
   @@schema("user")
 }
+
 
 enum Tag {
   TUITION
   BLOOD
   DISCUSSION
   PRODUCT
-  TECH
 
   @@schema("post")
 }
@@ -233,6 +283,81 @@ enum dept {
   Nanomaterials_and_Ceramic_Engineering
   Architecture
   Electrical_and_Electronics_Engineering
-
   @@schema("user")
+}
+
+model Event {
+  id           String      @id @default(uuid())
+  title        String
+  description  String
+  startDate    DateTime
+  finishDate   DateTime?
+  eventType    MeetingType
+  location     String?
+  onlineLink   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  organizers   String
+  Sponsors     String?
+  registration String?
+  rules        String?
+  prizes       String?
+  timeline     Timeline[]
+  resources    Resources[]
+  tag          EventTag
+
+  @@schema("event")
+}
+
+model Resources {
+  id          String @id @default(uuid())
+  description String
+  link        String
+
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
+
+  @@schema("event")
+}
+
+model Timeline {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  finishDate  DateTime?
+  meetingType MeetingType?
+  location    String?
+  onlineLink  String?
+
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
+
+  @@schema("event")
+}
+
+enum EventTag {
+  Workshop
+  Seminar
+  Sports
+  Competition
+  Rag_concert
+  Shapa_day
+  Flashmob
+  Cultural
+  Picnic
+  Tour
+  Normal_Online_Event
+  Normal_Offline_Event
+
+  @@schema("event")
+}
+
+enum MeetingType {
+  Online
+  Offline
+  Both
+  None
+
+  @@schema("event")
 }

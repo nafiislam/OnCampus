@@ -32,11 +32,12 @@ router.post('/', async (req, res) => {
             where: {
                 id: user_id
             },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                profilePicture: true,
+            select:{
+                id:true,
+                name:true,
+                email:true,
+                profilePicture:true,
+                role:true
             }
         })
 
@@ -126,9 +127,21 @@ router.post('/', async (req, res) => {
                         email: true,
                     }
                 },
-                createdAt: true,
-                updatedAt: true,
-                commentAllow: true,
+                intBy:{
+                    select:{
+                        profilePicture:true,
+                        name:true,
+                        id:true,
+                        email:true,
+                    }
+                },
+                createdAt:true,
+                updatedAt:true,
+                commentAllow:true,
+                bloodInfo:true,
+                tuitionInfo:true,
+                productInfo:true,
+                open:true,
             }
         })
 

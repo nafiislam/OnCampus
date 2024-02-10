@@ -126,7 +126,6 @@ async function createUser(user) {
         // Ensure that the Prisma client is properly disconnected
         await prisma.$disconnect();
     }
-
 }
 
 router.post('/createUser', async (req, res) => {

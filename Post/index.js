@@ -54,6 +54,30 @@ app.use('/vote',vote);
 import getPosts from './Routes/getPosts.js';
 app.use('/getPosts',getPosts);
 
+import int from './Routes/int.js';
+app.use('/int',int);
+
+import status from './Routes/status.js';
+app.use('/status',status);
+
+import commentStatus from './Routes/commentStatus.js';
+app.use('/commentStatus',commentStatus);
+
+import deletePost from './Routes/deletePost.js';
+app.use('/deletePost',deletePost);
+
+import deleteComment from './Routes/deleteComment.js';
+app.use('/deleteComment',deleteComment);
+
+import updateComment from './Routes/updateComment.js';
+app.use('/updateComment',updateComment);
+
+import getNotification from './Routes/getNotification.js';
+app.use('/getNotification',getNotification);
+
+import updatePost from './Routes/updatePost.js';
+app.use('/updatePost',updatePost);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});

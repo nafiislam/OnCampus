@@ -1,0 +1,23 @@
+create({data:{attr:{connect:{}}},})
+createMany({data:[{},{}]})
+findUnique({where:{},include:{},select:{}}) // for composite keys(id,age):id_email
+findMany({where:{},orderBy:{},take:2,skip:1,cursor:{},distinct:[]})
+
+update({where:{},data:{},include:{},select:{}})//only applicable for unique keys
+updateMany({where:{},data:{}})
+data:{attribute:{increment:1,decrement:1,set:1,multiply:10,divide:10,add:[1,2],remove:[1,2],delete:1}}
+data:{attribute:{connect:{ id:5545},disconnect:true,create:{}}}
+
+delete({where:{},include:{},select:{}})//only applicable for unique keys
+deleteMany({where:{}})
+
+aggregate({_count:{},_avg:{},_sum:{},_min:{},_max:{},where:{},include:{},select:{},orderBy:{},take:1,skip:2,distinct:[]})
+count({where:{},include:{},select:{},orderBy:{},take:2,skip:1,distinct:[]})
+groupBy({by:[],_count:{},_avg:{},_sum:{},_min:{},_max:{},where:{},include:{},select:{},orderBy:{},take:2,skip:1,distinct:[],having:{}})
+
+attr:{equals,contains,startsWith,endsWith,in,notIn,lt,gt,lte,gte,not}
+AND:[{attr:{}},{{attr:{}}}],OR:[{attr:{}},{{attr:{}}}],NOT:[{attr:{}},{{attr:{}}}]
+some:{},every:{},none:{}//for arrays
+relation:{is:{},isNot:{}},//for relations
+
+const prisma = new PrismaClient({log: ["query"]});
