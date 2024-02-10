@@ -31,7 +31,7 @@ app.all('/api/:apiName*', async (req, res) => {
     console.log('apiName', req.params.apiName);
     const { apiName } = req.params;
     const path = req.params[0];
-
+    console.log('path', path);
     const url = await getRegistry(apiName)
     if (url) {
         axios(
@@ -53,7 +53,8 @@ app.all('/api/:apiName*', async (req, res) => {
                 res.send(response.data);
             })
             .catch((e) => {
-                console.error(e);
+                // console.error(e);
+
                 res.status(500).json({ message: "Internal Server Error" });
             });
     }

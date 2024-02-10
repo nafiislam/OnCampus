@@ -2,11 +2,11 @@ import express from 'express'
 import pkg from '@prisma/client'
 const { clubRole, dept } = pkg
 import prisma from '../db.js'
-import validateRequest from './validateRequest.js'
+import {validateRequestAdmin} from './validateRequest.js'
 
 const router = express.Router();
 
-router.use(validateRequest);
+router.use(validateRequestAdmin);
 
 async function createUser(user) {
 

@@ -29,15 +29,30 @@ model User {
   likedComments        Comment[]      @relation("LikedComments")
   ClubMember           ClubMember[]
   session              String
+  batchRef             Batch          @relation(fields: [batch], references: [batchName])
   batch                String
   meritPosition        Int
-  department           String
+  department           dept
   VotedOptions         Option[]       @relation("VotedOptions")
   reminders            Reminder[]
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
+  address              String?
+  bloodGroup           String?
+  dateOfBirth          DateTime?
+  section              String?
+  aboutMe              String?
+  emergencyContact     String?
 
   @@index([email])
+  @@schema("user")
+}
+
+model Batch {
+  id        String @id @default(uuid())
+  batchName String @unique
+  User      User[]
+
   @@schema("user")
 }
 
@@ -55,9 +70,9 @@ model Club {
 
 model ClubMember {
   id     String   @id @default(uuid())
-  user   User     @relation(fields: [email], references: [email],onDelete: Cascade)
+  user   User     @relation(fields: [email], references: [email], onDelete: Cascade)
   email  String
-  club   Club     @relation(fields: [clubId], references: [id],onDelete: Cascade)
+  club   Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
   clubId String
   role   clubRole @default(GENERAL)
 
@@ -192,4 +207,21 @@ enum clubRole {
   GENERAL
 
   @@schema("club")
+}
+
+enum dept {
+  Computer_Science_and_Engineering
+  Mechanical_Engineering
+  Civil_Engineering
+  Biomedical_Engineering
+  Industrial_and_Production_Engineering
+  Naval_Architecture_and_Marine_Engineering
+  Water_Resource_Engineering
+  Materials_and_Metallurgical_Engineering
+  Chemical_Engineering
+  Nanomaterials_and_Ceramic_Engineering
+  Architecture
+  Electrical_and_Electronics_Engineering
+
+  @@schema("user")
 }

@@ -39,6 +39,9 @@ import getUserIDsByType from './Routes/getUserIDsByType.js';
 app.use('/getUserIDsByType', getUserIDsByType);
 import admin from './Routes/admin.js';
 app.use('/admin', admin);
+import user from './Routes/user.js';
+app.use('/', user);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({ message: "Not Found" });

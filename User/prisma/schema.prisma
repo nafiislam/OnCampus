@@ -37,6 +37,12 @@ model User {
   reminders            Reminder[]
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
+  address              String?
+  bloodGroup           String?
+  dateOfBirth          DateTime?
+  section              String?
+  aboutMe              String?
+  emergencyContact     String?
 
   @@index([email])
   @@schema("user")
