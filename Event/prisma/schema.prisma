@@ -23,11 +23,6 @@ model Event {
   updatedAt       DateTime    @updatedAt
   organizers      String
   Sponsors        String?
-  hasRegistration Boolean
-  hasTimeline     Boolean
-  hasRules        Boolean
-  hasResources    Boolean
-  hasPrizes       Boolean
   registration    String?
   rules           String?
   prizes          String?
