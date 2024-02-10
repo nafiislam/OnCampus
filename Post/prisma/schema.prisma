@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["user", "post", "club"]
+  schemas  = ["user", "post", "club", "event"]
 }
 
 model User {
@@ -32,13 +32,32 @@ model User {
   session              String
   batch                String
   meritPosition        Int
-  department           String
+  department           dept
   VotedOptions         Option[]       @relation("VotedOptions")
   reminders            Reminder[]
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
 
+  batchRef             Batch          @relation(fields: [batch], references: [batchName])
+  address              String?
+  bloodGroup           String?
+  dateOfBirth          DateTime?
+  section              String?
+  aboutMe              String?
+  emergencyContact     String?
+  accessGeneral        Access         @default(UNBANNED)
+  accessDept           Access         @default(UNBANNED)
+  accessBatch          Access         @default(UNBANNED)
+  accessDeptBatch      Access         @default(UNBANNED)
+
   @@index([email])
+  @@schema("user")
+}
+
+model Batch {
+  id        String @id @default(uuid())
+  batchName String @unique
+  User      User[]
   @@schema("user")
 }
 
@@ -205,6 +224,13 @@ model Notification {
   @@schema("post")
 }
 
+enum Access {
+  BANNED
+  UNBANNED
+  @@schema("user")
+}
+
+
 enum Tag {
   TUITION
   BLOOD
@@ -242,4 +268,96 @@ enum clubRole {
   GENERAL
 
   @@schema("club")
+}
+
+enum dept {
+  Computer_Science_and_Engineering
+  Mechanical_Engineering
+  Civil_Engineering
+  Biomedical_Engineering
+  Industrial_and_Production_Engineering
+  Naval_Architecture_and_Marine_Engineering
+  Water_Resource_Engineering
+  Materials_and_Metallurgical_Engineering
+  Chemical_Engineering
+  Nanomaterials_and_Ceramic_Engineering
+  Architecture
+  Electrical_and_Electronics_Engineering
+  @@schema("user")
+}
+
+model Event {
+  id           String      @id @default(uuid())
+  title        String
+  description  String
+  startDate    DateTime
+  finishDate   DateTime?
+  eventType    MeetingType
+  location     String?
+  onlineLink   String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  organizers   String
+  Sponsors     String?
+  registration String?
+  rules        String?
+  prizes       String?
+  timeline     Timeline[]
+  resources    Resources[]
+  tag          EventTag
+
+  @@schema("event")
+}
+
+model Resources {
+  id          String @id @default(uuid())
+  description String
+  link        String
+
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
+
+  @@schema("event")
+}
+
+model Timeline {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  finishDate  DateTime?
+  meetingType MeetingType?
+  location    String?
+  onlineLink  String?
+
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
+
+  @@schema("event")
+}
+
+enum EventTag {
+  Workshop
+  Seminar
+  Sports
+  Competition
+  Rag_concert
+  Shapa_day
+  Flashmob
+  Cultural
+  Picnic
+  Tour
+  Normal_Online_Event
+  Normal_Offline_Event
+
+  @@schema("event")
+}
+
+enum MeetingType {
+  Online
+  Offline
+  Both
+  None
+
+  @@schema("event")
 }

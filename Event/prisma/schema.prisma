@@ -2,12 +2,288 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["user", "post", "club", "event"]
+}
+
+model User {
+  id                   String         @id @default(uuid())
+  email                String         @unique
+  name                 String?
+  phoneNumber          String?
+  profilePicture       String?
+  posts                Post[]         @relation("WrittenPosts")
+  comments             Comment[]
+  likedPosts           Post[]         @relation("LikedPosts")
+  savedPosts           Post[]         @relation("SavedPosts")
+  viewedPosts          Post[]         @relation("ViewedPosts")
+  intPosts             Post[]         @relation("IntPosts")
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  role                 Role           @default(USER)
+  likedComments        Comment[]      @relation("LikedComments")
+  ClubMember           ClubMember[]
+  session              String
+  batch                String
+  meritPosition        Int
+  department           dept
+  VotedOptions         Option[]       @relation("VotedOptions")
+  reminders            Reminder[]
+  createdNotifications Notification[] @relation("createdNotifications")
+  myNotifications      Notification[] @relation("myNotifications")
+
+  batchRef             Batch          @relation(fields: [batch], references: [batchName])
+  address              String?
+  bloodGroup           String?
+  dateOfBirth          DateTime?
+  section              String?
+  aboutMe              String?
+  emergencyContact     String?
+  accessGeneral        Access         @default(UNBANNED)
+  accessDept           Access         @default(UNBANNED)
+  accessBatch          Access         @default(UNBANNED)
+  accessDeptBatch      Access         @default(UNBANNED)
+
+  @@index([email])
+  @@schema("user")
+}
+
+model Batch {
+  id        String @id @default(uuid())
+  batchName String @unique
+  User      User[]
+  @@schema("user")
+}
+
+model Club {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  members     ClubMember[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  images      String[]
+
+  @@schema("club")
+}
+
+model ClubMember {
+  id     String   @id @default(uuid())
+  user   User     @relation(fields: [email], references: [email], onDelete: Cascade)
+  email  String
+  club   Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  clubId String
+  role   clubRole @default(GENERAL)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("club")
+}
+
+model Post {
+  id              String        @id @default(uuid())
+  title           String
+  content         String
+  type            String
+  author          User          @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        String
+  comments        Comment[]
+  images          String[]
+  imageNames      String[]
+  anonymous       Boolean
+  isPoll          Boolean
+  options         Option[]
+  tags            Tag[]
+  likedBy         User[]        @relation("LikedPosts")
+  savedBy         User[]        @relation("SavedPosts")
+  viewedBy        User[]        @relation("ViewedPosts")
+  intBy           User[]        @relation("IntPosts")
+  attachments     String[]
+  attachmentNames String[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  commentAllow    Boolean       @default(true)
+  reminders       Reminder[]
+  notification    Notification?
+  open            Boolean       @default(true)
+
+  bloodInfo   BloodInfo?
+  tuitionInfo TuitionInfo?
+  productInfo ProductInfo?
+
+  @@schema("post")
+}
+
+model BloodInfo {
+  id           String @id @default(uuid())
+  bloodGroup   String
+  units        Int
+  hospital     String
+  contact      String
+  time         String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
+
+  @@schema("post")
+}
+
+model TuitionInfo {
+  id               String @id @default(uuid())
+  genderPreference String
+  location         String
+  class            String
+  member           Int
+  subject          String
+  time             Int
+  medium           String
+  salary           Int
+  contact          String
+  studentInstitute String
+  gender           String
+  parentPost       Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId     String @unique
+
+  @@schema("post")
+}
+
+model ProductInfo {
+  id           String @id @default(uuid())
+  type         String
+  name         String
+  price        Int
+  contact      String
+  parentPost   Post   @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId String @unique
+
+  @@schema("post")
+}
+
+model Option {
+  optionID  String   @id @default(uuid())
+  title     String
+  votedBy   User[]   @relation("VotedOptions")
+  post      Post     @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("post")
+}
+
+model Comment {
+  id              String    @id @default(uuid())
+  content         String
+  author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        String
+  post            Post?     @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
+  parentPostId    String
+  parentCommentID String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  comments        Comment[] @relation("ChildComments")
+  comment         Comment?  @relation("ChildComments", fields: [parentCommentID], references: [id], onDelete: Cascade)
+  likedBy         User[]    @relation("LikedComments")
+
+  @@schema("post")
+}
+
+model Reminder {
+  id        String      @id @default(uuid())
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  createdAt DateTime    @default(now())
+  time      String
+  type      ReminderTag
+  post      Post?       @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID    String?
+  status    Boolean     @default(false)
+
+  @@schema("post")
+}
+
+model Notification {
+  id          String      @id @default(uuid())
+  content     String
+  author      User        @relation("createdNotifications", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  createdAt   DateTime    @default(now())
+  type        ReminderTag
+  seen        Boolean     @default(false)
+  belongsTo   User        @relation("myNotifications", fields: [belongsToId], references: [id], onDelete: Cascade)
+  belongsToId String
+  post        Post?       @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID      String?     @unique
+
+  @@schema("post")
+}
+
+enum Access {
+  BANNED
+  UNBANNED
+  @@schema("user")
+}
+
+
+enum Tag {
+  TUITION
+  BLOOD
+  DISCUSSION
+  PRODUCT
+
+  @@schema("post")
+}
+
+enum ReminderTag {
+  POST
+  EVENT
+
+  @@schema("post")
+}
+
+enum Role {
+  USER
+  ADMIN
+  BR
+  CR
+
+  @@schema("user")
+}
+
+enum clubRole {
+  PRESIDENT
+  VICE_PRESIDENT
+  GENERAL_SECRETARY
+  ASSISTANT_GENERAL_SECRETARY
+  SECRETARY
+  JOINT_SECRETARY
+  OFFICE_SECRETARY
+  EXECUTIVE
+  GENERAL
+
+  @@schema("club")
+}
+
+enum dept {
+  Computer_Science_and_Engineering
+  Mechanical_Engineering
+  Civil_Engineering
+  Biomedical_Engineering
+  Industrial_and_Production_Engineering
+  Naval_Architecture_and_Marine_Engineering
+  Water_Resource_Engineering
+  Materials_and_Metallurgical_Engineering
+  Chemical_Engineering
+  Nanomaterials_and_Ceramic_Engineering
+  Architecture
+  Electrical_and_Electronics_Engineering
+  @@schema("user")
 }
 
 model Event {
@@ -28,7 +304,9 @@ model Event {
   prizes       String?
   timeline     Timeline[]
   resources    Resources[]
-  tag          Tag
+  tag          EventTag
+
+  @@schema("event")
 }
 
 model Resources {
@@ -38,6 +316,8 @@ model Resources {
 
   Event   Event?  @relation(fields: [eventId], references: [id])
   eventId String?
+
+  @@schema("event")
 }
 
 model Timeline {
@@ -52,9 +332,11 @@ model Timeline {
 
   Event   Event?  @relation(fields: [eventId], references: [id])
   eventId String?
+
+  @@schema("event")
 }
 
-enum Tag {
+enum EventTag {
   Workshop
   Seminar
   Sports
@@ -67,6 +349,8 @@ enum Tag {
   Tour
   Normal_Online_Event
   Normal_Offline_Event
+
+  @@schema("event")
 }
 
 enum MeetingType {
@@ -74,4 +358,6 @@ enum MeetingType {
   Offline
   Both
   None
+
+  @@schema("event")
 }
