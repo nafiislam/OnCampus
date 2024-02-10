@@ -35,10 +35,25 @@ try {
 
 import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
 app.use('/getUserIDByEmail',getUserIDByEmail);
+
 import getUserIDsByType from'./Routes/getUserIDsByType.js';
 app.use('/getUserIDsByType',getUserIDsByType);
+
 import admin from './Routes/admin.js';
 app.use('/admin', admin);
+
+import profile from'./Routes/profile.js';
+app.use('/profile',profile);
+
+import getUser from'./Routes/getUser.js';
+app.use('/getUser',getUser);
+
+import postUserAuth from'./Routes/postUserAuth.js';
+app.use('/postUserAuth',postUserAuth);
+
+import commentUserAuth from'./Routes/commentUserAuth.js';
+app.use('/commentUserAuth',commentUserAuth);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});

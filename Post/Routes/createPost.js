@@ -17,17 +17,14 @@ router.post('/', async(req, res) => {
           isAnonymous,
           reminderCheck,
           reminder,
-          discussionCheck,
-          bloodCheck,
-          tutionCheck,
-          productCheck,
-          techCheck,
+          radio,
+          moreData,
           pollCheck,
           options,
           imgList,
           list} = req.body;
 
-        if(title==undefined || content==undefined || postType==undefined || isComment==undefined || isNotify==undefined || isAnonymous==undefined || reminderCheck==undefined || reminder==undefined || discussionCheck==undefined || bloodCheck==undefined || tutionCheck==undefined || productCheck==undefined || techCheck==undefined || pollCheck==undefined || options==undefined || imgList==undefined || list==undefined){
+        if(title==undefined || content==undefined || postType==undefined || isComment==undefined || isNotify==undefined || isAnonymous==undefined || reminderCheck==undefined || reminder==undefined || pollCheck==undefined || options==undefined || imgList==undefined || list==undefined|| radio==undefined || moreData==undefined){
             res.status(400).json({message: "All fields are required"});
             return;
         }
@@ -87,22 +84,35 @@ router.post('/', async(req, res) => {
           return;
       }
 
-      
       var tagList = [];
-      if(discussionCheck){
+      if(radio=="DISCUSSION"){
+        console.log("discussion");
         tagList.push(Tag.DISCUSSION);
       }
-      if(bloodCheck){
+      else if(radio=="BLOOD"){
+        if(moreData.bloodGroup==undefined || moreData.units==undefined || moreData.hospital==undefined || moreData.contact==undefined || moreData.time==undefined){
+          res.status(400).json({message: "All fields are required for moreData"});
+          return;
+        }
         tagList.push(Tag.BLOOD);
       }
-      if(tutionCheck){
+      else if(radio=="TUITION"){
+        if(moreData.genderPreference==undefined || moreData.location==undefined || moreData.class==undefined || moreData.member==undefined || moreData.subject==undefined || moreData.time==undefined || moreData.medium==undefined || moreData.salary==undefined || moreData.contact==undefined || moreData.studentInstitute==undefined||moreData.gender==undefined){
+          res.status(400).json({message: "All fields are required for moreData"});
+          return;
+        }
         tagList.push(Tag.TUITION);
       }
-      if(productCheck){
+      else if(radio=="PRODUCT"){
+        if(moreData.type==undefined || moreData.name==undefined || moreData.price==undefined || moreData.contact==undefined){
+          res.status(400).json({message: "All fields are required for moreData"});
+          return;
+        }
         tagList.push(Tag.PRODUCT);
       }
-      if(techCheck){
-        tagList.push(Tag.TECH);
+      else{
+        res.status(400).json({message: "Invalid radio"});
+        return;
       }
 
       var images = [];
@@ -122,30 +132,142 @@ router.post('/', async(req, res) => {
         });
       }
 
-      const post = await prisma.post.create({
-          data: {
-              title: title,
-              content: content,
-              type: postType,
-              commentAllow: isComment,
-              anonymous: isAnonymous,
-              tags: tagList,
-              isPoll: pollCheck,
-              images: images,
-              imageNames: imageNames,
-              attachments: files,
-              attachmentNames: fileNames,
-              author: {
-                  connect: {
-                      id: user_id,
-                  },
-              },
-          },
-          select: {
-              id: true,
-          },
-      });
+      var post = null;
 
+      if(radio=="BLOOD"){
+        post = await prisma.post.create({
+            data: {
+                title: title,
+                content: content,
+                type: postType,
+                commentAllow: isComment,
+                anonymous: isAnonymous,
+                tags: tagList,
+                isPoll: pollCheck,
+                images: images,
+                imageNames: imageNames,
+                attachments: files,
+                attachmentNames: fileNames,
+                author: {
+                    connect: {
+                        id: user_id,
+                    },
+                },
+                bloodInfo:{
+                  create:{
+                    bloodGroup: moreData.bloodGroup,
+                    units: moreData.units,
+                    hospital: moreData.hospital,
+                    contact: moreData.contact,
+                    time: moreData.time
+                  }
+                }
+            },
+            select: {
+                id: true,
+            },
+        });
+      }
+      else if(radio=="TUITION"){
+        post = await prisma.post.create({
+            data: {
+                title: title,
+                content: content,
+                type: postType,
+                commentAllow: isComment,
+                anonymous: isAnonymous,
+                tags: tagList,
+                isPoll: pollCheck,
+                images: images,
+                imageNames: imageNames,
+                attachments: files,
+                attachmentNames: fileNames,
+                author: {
+                    connect: {
+                        id: user_id,
+                    },
+                },
+                tuitionInfo:{
+                  create:{
+                    genderPreference: moreData.genderPreference,
+                    location: moreData.location,
+                    class: moreData.class,
+                    member: moreData.member,
+                    subject: moreData.subject,
+                    time: moreData.time,
+                    medium: moreData.medium,
+                    salary: moreData.salary,
+                    contact: moreData.contact,
+                    studentInstitute: moreData.studentInstitute,
+                    gender: moreData.gender
+                  }
+                }
+            },
+            select: {
+                id: true,
+            },
+        });
+      }
+      else if(radio=="PRODUCT"){
+        post = await prisma.post.create({
+            data: {
+                title: title,
+                content: content,
+                type: postType,
+                commentAllow: isComment,
+                anonymous: isAnonymous,
+                tags: tagList,
+                isPoll: pollCheck,
+                images: images,
+                imageNames: imageNames,
+                attachments: files,
+                attachmentNames: fileNames,
+                author: {
+                    connect: {
+                        id: user_id,
+                    },
+                },
+                productInfo:{
+                  create:{
+                    type: moreData.type,
+                    name: moreData.name,
+                    price: moreData.price,
+                    contact: moreData.contact
+                  }
+                }
+            },
+            select: {
+                id: true,
+            },
+        });
+      }
+      else{
+        console.log("discussion");
+        post = await prisma.post.create({
+            data: {
+                title: title,
+                content: content,
+                type: postType,
+                commentAllow: isComment,
+                anonymous: isAnonymous,
+                tags: tagList,
+                isPoll: pollCheck,
+                images: images,
+                imageNames: imageNames,
+                attachments: files,
+                attachmentNames: fileNames,
+                author: {
+                    connect: {
+                        id: user_id,
+                    },
+                },
+            },
+            select: {
+                id: true,
+            },
+        });
+      }
+      
       if(reminderCheck){
         const rem_res = await prisma.reminder.create({
           data:{
@@ -176,7 +298,7 @@ router.post('/', async(req, res) => {
             users.forEach(async (user) => {
                 await prisma.notification.create({
                     data: {
-                        content: 'New Post by '+user_id,
+                        content: `New Post in ${postType}`,
                         type: ReminderTag.POST,
                         post: {
                             connect: {
