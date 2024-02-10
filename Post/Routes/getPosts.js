@@ -17,6 +17,7 @@ router.post('/General', async(req, res) => {
         }
         
         const user_url = await getRegistry("user");
+        console.log(user_url);
         const user_id_res = await axios.post(`${user_url.url}/getUserIDByEmail`, {
             email: email,
         });

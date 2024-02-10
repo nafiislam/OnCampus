@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));//set the static files d
 try {
     const response = await axios.post('http://localhost:5003/registerService', {
         serverName: "event",
-        url: http://localhost:${port}
+        url: `http://localhost:${port}`
     });
 
     if (response.status !== 200) {
@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(Example app listening on port ${port}!)
+    console.log(`Example app listening on port ${port}!`)
 });
 
 // Listen for termination and interrupt signals
