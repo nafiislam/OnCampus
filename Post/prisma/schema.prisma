@@ -43,6 +43,10 @@ model User {
   section              String?
   aboutMe              String?
   emergencyContact     String?
+  accessGeneral        Access         @default(UNBANNED)
+  accessDept           Access         @default(UNBANNED)
+  accessBatch          Access         @default(UNBANNED)
+  accessDeptBatch      Access         @default(UNBANNED)
 
   @@index([email])
   @@schema("user")
@@ -167,6 +171,13 @@ model Notification {
   postID      String?     @unique
 
   @@schema("post")
+}
+
+enum Access {
+  BANNED
+  UNBANNED
+
+  @@schema("user")
 }
 
 enum Tag {

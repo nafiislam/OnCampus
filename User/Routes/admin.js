@@ -1,8 +1,8 @@
 import express from 'express'
 import pkg from '@prisma/client'
-const { clubRole, dept } = pkg
+const { clubRole, dept, Access } = pkg
 import prisma from '../db.js'
-import {validateRequestAdmin} from './validateRequest.js'
+import { validateRequestAdmin } from './validateRequest.js'
 
 const router = express.Router();
 
@@ -309,6 +309,150 @@ router.get('/getClubs', async (req, res) => {
     const clubs = await prisma.club.findMany()
     res.send(clubs)
 })
+
+router.get('/getUsers', async (req, res) => {
+    console.log("getUsers")
+    const users = await prisma.user.findMany()
+    console.log(users)
+    res.send(users)
+})
+
+router.post("/updateChannelAccess", async (req, res) => {
+
+    console.log(req.body)
+
+    const {
+        email,
+        accessGeneral,
+        accessDept,
+        accessBatch,
+        accessDeptBatch
+    } = req.body;
+
+    if (email == undefined || accessGeneral == undefined || accessDept == undefined || accessBatch == undefined || accessDeptBatch == undefined) {
+        res.status(400).json({ message: "All fields are required" });
+        return;
+    }
+
+    if (email === "") {
+        res.status(400).json({ message: "Email is required" });
+        return;
+    }
+
+    if (Access[accessGeneral] == undefined || Access[accessDept] == undefined || Access[accessBatch] == undefined || Access[accessDeptBatch] == undefined) {
+        res.status(400).json({ message: "Invalid access" });
+        return;
+    }
+
+    try {
+        const user = await prisma.user.update({
+            where: {
+                email: email
+            },
+            data: {
+                accessGeneral: Access[accessGeneral],
+                accessDept: Access[accessDept],
+                accessBatch: Access[accessBatch],
+                accessDeptBatch: Access[accessDeptBatch],
+            }
+        });
+
+        console.log(user)
+        res.send({ message: "User updated" });
+    } catch (error) {
+        console.error("Error while updating user:", error);
+        res.status(500).json({ message: "Error!" });
+    }
+
+});
+
+router.post("/updateClubRoles", async (req, res) => {
+
+    console.log(req.body)
+
+    const {
+        email,
+        ClubMember
+    } = req.body;
+
+    if (email == undefined || ClubMember == undefined) {
+        res.status(400).json({ message: "All fields are required" });
+        return;
+    }
+
+    if (email === "") {
+        res.status(400).json({ message: "Email is required" });
+        return;
+    }
+
+    if (!Array.isArray(ClubMember)) {
+        res.status(400).json({ message: "Invalid request body" });
+        return;
+    }
+
+    for (let club_role of ClubMember) {
+        console.log(club_role)
+        if (club_role.club.name == undefined || club_role.role == undefined) {
+            res.status(400).json({ message: "All fields are required" });
+            return;
+        }
+
+        if (club_role.club.name === "") {
+            res.status(400).json({ message: "Club Name is required" });
+            return;
+        }
+
+        if (club_role.role === "") {
+            res.status(400).json({ message: "Role is required" });
+            return;
+        }
+
+        if (clubRole[club_role.role.toUpperCase()] == undefined) {
+            res.status(400).json({ message: "Invalid role" });
+            return;
+        }
+
+    }
+
+    try {
+        await prisma.$transaction(async (tx) => {
+
+            await tx.clubMember.deleteMany({
+                where: {
+                    email: email
+                }
+            });
+
+            for (let club_role of ClubMember) {
+                const updatedClub = await tx.club.update({
+                    where: {
+                        name: club_role.club.name,
+                    },
+                    data: {
+                        members: {
+                            create: {
+                                role: clubRole[club_role.role.toUpperCase()],
+                                email: email,
+                            },
+                        },
+                    },
+                    include: {
+                        members: true, // Include the members in the response
+                    },
+                })
+                console.log(updatedClub)
+            }
+        })
+    } catch (error) {
+        console.error("Error while updating user club roles:", error);
+        res.status(500).json({ message: "Error!" });
+    }
+
+    res.send({ message: "User Club Roles updated" });
+
+});
+
+
 
 router.use((req, res, next) => {
     res.status(404).json({ message: "Not Found" });

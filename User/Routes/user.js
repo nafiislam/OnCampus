@@ -1,7 +1,9 @@
 import express from 'express'
 import pkg from '@prisma/client'
+const { Role } = pkg;
 import prisma from '../db.js'
 import { validateRequestUser } from './validateRequest.js'
+
 
 const router = express.Router();
 
@@ -104,15 +106,11 @@ async function getUserInfo(email) {
         }
     });
 
-
-
 }
 
 router.post('/getUser', async (req, res) => {
     const getUserEmail = req.body.email;
     const userEmail = req.headers.email;
-    const isAdmin = req.headers.admin;
-
     console.log(getUserEmail);
 
     if (getUserEmail == undefined) {
@@ -133,7 +131,7 @@ router.post('/getUser', async (req, res) => {
             res.status(404).json({ message: "User not found" });
             return;
         }
-
+        console.log(user);
         res.send(user);
     } catch (error) {
         console.error("Error while getting user info:", error);
@@ -141,7 +139,6 @@ router.post('/getUser', async (req, res) => {
     }
 
 });
-
 
 router.post('/updateProfile', async (req, res) => {
     const email = req.headers.email;
@@ -211,6 +208,10 @@ router.post('/updateProfile', async (req, res) => {
 
         console.log("here");
 
+        if (role == null) {
+            res.status(400).json({ message: "Role is Required" });
+            return;
+        }
 
         let dob = null;
         if (dateOfBirth) {
@@ -222,6 +223,8 @@ router.post('/updateProfile', async (req, res) => {
             console.log(dob);
 
         }
+
+
 
         try {
             const user = await prisma.user.update({
