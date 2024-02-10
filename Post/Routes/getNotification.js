@@ -120,7 +120,7 @@ router.get('/all', async(req, res) => {
                 belongsTo:true,
             }
         })
-
+        
         res.status(200).json({notis:notifications});
     }
     catch(e){
