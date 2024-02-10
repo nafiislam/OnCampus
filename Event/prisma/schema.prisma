@@ -2,194 +2,81 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["user", "post", "club"]
 }
 
-model User {
-  id                   String         @id @default(uuid())
-  email                String         @unique
-  name                 String?
-  phoneNumber          String?
-  profilePicture       String?
-  posts                Post[]         @relation("WrittenPosts")
-  comments             Comment[]
-  likedPosts           Post[]         @relation("LikedPosts")
-  savedPosts           Post[]         @relation("SavedPosts")
-  viewedPosts          Post[]         @relation("ViewedPosts")
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  role                 Role           @default(USER)
-  likedComments        Comment[]      @relation("LikedComments")
-  ClubMember           ClubMember[]
-  session              String
-  batch                String
-  meritPosition        Int
-  department           String
-  VotedOptions         Option[]       @relation("VotedOptions")
-  reminders            Reminder[]
-  createdNotifications Notification[] @relation("createdNotifications")
-  myNotifications      Notification[] @relation("myNotifications")
-
-  @@index([email])
-  @@schema("user")
-}
-
-model Club {
-  id          String       @id @default(uuid())
-  name        String       @unique
-  description String?
-  members     ClubMember[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  images      String[]
-
-  @@schema("club")
-}
-
-model ClubMember {
-  id     String   @id @default(uuid())
-  user   User     @relation(fields: [email], references: [email],onDelete: Cascade)
-  email  String
-  club   Club     @relation(fields: [clubId], references: [id],onDelete: Cascade)
-  clubId String
-  role   clubRole @default(GENERAL)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@schema("club")
-}
-
-model Post {
-  id              String        @id @default(uuid())
+model Event {
+  id              String      @id @default(uuid())
   title           String
-  content         String
-  type            String
-  author          User          @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId        String
-  comments        Comment[]
-  images          String[]
-  imageNames      String[]
-  anonymous       Boolean
-  isPoll          Boolean
-  options         Option[]
-  tags            Tag[]
-  likedBy         User[]        @relation("LikedPosts")
-  savedBy         User[]        @relation("SavedPosts")
-  viewedBy        User[]        @relation("ViewedPosts")
-  attachments     String[]
-  attachmentNames String[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  commentAllow    Boolean       @default(true)
-  reminders       Reminder[]
-  notification    Notification?
-
-  @@schema("post")
+  description     String
+  startDate       DateTime
+  finishDate      DateTime?
+  eventType       MeetingType
+  location        String?
+  onlineLink      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  organizers      String
+  Sponsors        String?
+  hasRegistration Boolean
+  hasTimeline     Boolean
+  hasRules        Boolean
+  hasResources    Boolean
+  hasPrizes       Boolean
+  registration    String?
+  rules           String?
+  prizes          String?
+  timeline        Timeline[]
+  resources       Resources[]
+  tag             Tag
 }
 
-model Option {
-  optionID  String   @id @default(uuid())
-  title     String
-  votedBy   User[]   @relation("VotedOptions")
-  post      Post     @relation(fields: [postID], references: [id], onDelete: Cascade)
-  postID    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Resources {
+  id          String @id @default(uuid())
+  description String
+  link        String
 
-  @@schema("post")
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
 }
 
-model Comment {
-  id              String    @id @default(uuid())
-  content         String
-  author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId        String
-  post            Post?     @relation(fields: [parentPostId], references: [id], onDelete: Cascade)
-  parentPostId    String
-  parentCommentID String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  comments        Comment[] @relation("ChildComments")
-  comment         Comment?  @relation("ChildComments", fields: [parentCommentID], references: [id], onDelete: Cascade)
-  likedBy         User[]    @relation("LikedComments")
+model Timeline {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  finishDate  DateTime?
+  meetingType MeetingType?
+  location    String?
+  onlineLink  String?
 
-  @@schema("post")
-}
-
-model Reminder {
-  id        String      @id @default(uuid())
-  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String
-  createdAt DateTime    @default(now())
-  time      String
-  type      ReminderTag
-  post      Post?       @relation(fields: [postID], references: [id], onDelete: Cascade)
-  postID    String?
-  status    Boolean     @default(false)
-
-  @@schema("post")
-}
-
-model Notification {
-  id          String      @id @default(uuid())
-  content     String
-  author      User        @relation("createdNotifications", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    String
-  createdAt   DateTime    @default(now())
-  type        ReminderTag
-  seen        Boolean     @default(false)
-  belongsTo   User        @relation("myNotifications", fields: [belongsToId], references: [id], onDelete: Cascade)
-  belongsToId String
-  post        Post?       @relation(fields: [postID], references: [id], onDelete: Cascade)
-  postID      String?     @unique
-
-  @@schema("post")
+  Event   Event?  @relation(fields: [eventId], references: [id])
+  eventId String?
 }
 
 enum Tag {
-  TUITION
-  BLOOD
-  DISCUSSION
-  PRODUCT
-  TECH
-
-  @@schema("post")
+  Workshop
+  Seminar
+  Sports
+  Competition
+  Rag_concert
+  Shapa_day
+  Flashmob
+  Cultural
+  Picnic
+  Tour
+  Normal_Online_Event
+  Normal_Offline_Event
 }
 
-enum ReminderTag {
-  POST
-  EVENT
-
-  @@schema("post")
-}
-
-enum Role {
-  USER
-  ADMIN
-  BR
-  CR
-
-  @@schema("user")
-}
-
-enum clubRole {
-  PRESIDENT
-  VICE_PRESIDENT
-  GENERAL_SECRETARY
-  ASSISTANT_GENERAL_SECRETARY
-  SECRETARY
-  JOINT_SECRETARY
-  OFFICE_SECRETARY
-  EXECUTIVE
-  GENERAL
-
-  @@schema("club")
+enum MeetingType {
+  Online
+  Offline
+  Both
+  None
 }
