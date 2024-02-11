@@ -1,9 +1,9 @@
-import express from 'express';
+import axios from 'axios';
 import cokieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import cors_middleware from './cors_middleware.js';
+import express from 'express';
 import path from 'path';
-import axios from 'axios';
+import cors_middleware from './cors_middleware.js';
 
 dotenv.config();
 const app = express();
@@ -33,29 +33,30 @@ try {
     process.exit(0);
 }
 
-import user from './Routes/user.js';
-app.use('/', user);
 
-import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
+import getUserIDByEmail from './Routes/getUserIDByEmail.js';
 app.use('/getUserIDByEmail',getUserIDByEmail);
 
-import getUserIDsByType from'./Routes/getUserIDsByType.js';
+import getUserIDsByType from './Routes/getUserIDsByType.js';
 app.use('/getUserIDsByType',getUserIDsByType);
 
 import admin from './Routes/admin.js';
 app.use('/admin', admin);
 
-import profile from'./Routes/profile.js';
+import profile from './Routes/profile.js';
 app.use('/profile',profile);
 
-import getUser from'./Routes/getUser.js';
+import getUser from './Routes/getUser.js';
 app.use('/getUser',getUser);
 
-import postUserAuth from'./Routes/postUserAuth.js';
+import postUserAuth from './Routes/postUserAuth.js';
 app.use('/postUserAuth',postUserAuth);
 
-import commentUserAuth from'./Routes/commentUserAuth.js';
+import commentUserAuth from './Routes/commentUserAuth.js';
 app.use('/commentUserAuth',commentUserAuth);
+
+import user from './Routes/user.js';
+app.use('/', user);
 
 //404 error handler
 app.use((req, res, next) => {
@@ -97,7 +98,7 @@ async function gracefulShutdown() {
         const response = await axios.post('http://localhost:5003/unRegisterService', {
             serverName: "user",
         });
-
+        
         if (response.status !== 200) {
             console.log(response.data.message);
             process.exit(0);

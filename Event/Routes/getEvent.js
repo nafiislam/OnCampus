@@ -1,10 +1,9 @@
 import express from 'express';
-// import prisma from '../db.js'
-import { PrismaClient } from '@prisma/client/edge';
+import prisma from '../db.js'
 import axios from 'axios';
 import getRegistry from '../server.js';
 const router = express.Router();
-const prisma = new PrismaClient()
+
 
 router.post('/', async(req, res) => {
     try{
@@ -21,6 +20,7 @@ router.post('/', async(req, res) => {
         const user_id_res = await axios.post(`${user_url.url}/getUserIDByEmail`, {
             email: email,
         });
+        console.log(email);
         const user_id = user_id_res.data.id;
         console.log("user_id: ", user_id);
 
@@ -80,7 +80,7 @@ router.post('/', async(req, res) => {
                             link:true,
                         }
                     },
-                    eventTag : true,
+                    tag : true,
                 }
             })
 
