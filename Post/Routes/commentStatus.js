@@ -38,6 +38,15 @@ router.post('/', async(req, res) => {
             return;
         }
 
+        const r = await axios.post(`${user_url.url}/checkBan`, {
+            pid: id,
+            uid:user_id
+        });
+
+        if(r.status!=200){
+        res.sendStatus(400).send({message:"Banned"})
+        }
+
         const status = await axios.post(`${user_url.url}/postUserAuth`, {
             uid: user_id,
             pid: id

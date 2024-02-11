@@ -27,37 +27,132 @@ async function getMyInfo(email) {
                 },
             },
             posts: {
-                select: {
-                    id: true,
-                    title: true,
-                    content: true,
-                    type: true,
-                    author: {
-                        select: {
-                            profilePicture: true,
-                            name: true,
-                            id: true,
-                            email: true,
+                select:{
+                    id:true,
+                    title:true,
+                    content:true,
+                    type:true,
+                    author:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
                         }
                     },
-                    anonymous: true,
-                    isPoll: true,
-                    tags: true,
-                    createdAt: true,
-                    updatedAt: true,
+                    anonymous:true,
+                    isPoll:true,
+                    tags:true,
+                    likedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    savedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    createdAt:true,
+                    updatedAt:true,
+                    commentAllow:true,
+                    bloodInfo:true,
+                    tuitionInfo:true,
+                    productInfo:true,
+                    open:true,
                 }
             },
             reminders: true,
             myNotifications: true,
             createdNotifications: true,
             savedPosts: {
-                include: {
-                    author: true,
+                select:{
+                    id:true,
+                    title:true,
+                    content:true,
+                    type:true,
+                    author:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    anonymous:true,
+                    isPoll:true,
+                    tags:true,
+                    likedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    savedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    createdAt:true,
+                    updatedAt:true,
+                    commentAllow:true,
+                    bloodInfo:true,
+                    tuitionInfo:true,
+                    productInfo:true,
+                    open:true,
                 }
             },
             likedPosts: {
-                include: {
-                    author: true,
+                select:{
+                    id:true,
+                    title:true,
+                    content:true,
+                    type:true,
+                    author:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    anonymous:true,
+                    isPoll:true,
+                    tags:true,
+                    likedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    savedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    createdAt:true,
+                    updatedAt:true,
+                    commentAllow:true,
+                    bloodInfo:true,
+                    tuitionInfo:true,
+                    productInfo:true,
+                    open:true,
                 }
             }
         }
@@ -83,24 +178,45 @@ async function getUserInfo(email) {
                 },
             },
             posts: {
-                select: {
-                    id: true,
-                    title: true,
-                    content: true,
-                    type: true,
-                    author: {
-                        select: {
-                            profilePicture: true,
-                            name: true,
-                            id: true,
-                            email: true,
+                select:{
+                    id:true,
+                    title:true,
+                    content:true,
+                    type:true,
+                    author:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
                         }
                     },
-                    anonymous: true,
-                    isPoll: true,
-                    tags: true,
-                    createdAt: true,
-                    updatedAt: true,
+                    anonymous:true,
+                    isPoll:true,
+                    tags:true,
+                    likedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    savedBy:{
+                        select:{
+                            profilePicture:true,
+                            name:true,
+                            id:true,
+                            email:true,
+                        }
+                    },
+                    createdAt:true,
+                    updatedAt:true,
+                    commentAllow:true,
+                    bloodInfo:true,
+                    tuitionInfo:true,
+                    productInfo:true,
+                    open:true,
                 }
             }
         }

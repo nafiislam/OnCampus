@@ -63,6 +63,15 @@ router.post('/', async(req, res) => {
           return;
       }
 
+      const r = await axios.post(`${user_url.url}/checkBan`, {
+        pid: pid,
+        uid:user_id
+      });
+
+      if(r.status!=200){
+        res.sendStatus(400).send({message:"Banned"})
+      }
+
       var images = [];
       var files = [];
       var imageNames = [];
@@ -85,7 +94,8 @@ router.post('/', async(req, res) => {
       if(radio=="BLOOD"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -114,7 +124,8 @@ router.post('/', async(req, res) => {
       else if(radio=="TUITION"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -149,7 +160,8 @@ router.post('/', async(req, res) => {
       else if(radio=="PRODUCT"){
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
@@ -175,10 +187,11 @@ router.post('/', async(req, res) => {
         });
       }
       else{
-        console.log("discussion");
+
         post = await prisma.post.update({
             where:{
-                id:pid
+                id:pid,
+                authorId: user_id
             },
             data: {
                 title: title,
