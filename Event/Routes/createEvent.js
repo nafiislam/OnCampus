@@ -1,8 +1,9 @@
 import express from 'express';
-// import prisma from '../db.js'
-import { PrismaClient } from '@prisma/client';
+import { Tag,Role, ReminderTag, MeetingType } from '@prisma/client'
+import prisma from '../db.js'
+import getRegistry from '../server.js'
+import axios from 'axios';
 const router = express.Router();
-const prisma = new PrismaClient()
 
 router.post('/', async(req, res) => {
     try{
@@ -22,7 +23,7 @@ router.post('/', async(req, res) => {
               prizes, 
               timeline, 
               resources, 
-              tag} = req.body;
+              eventTag} = req.body;
 
       const user_url = await getRegistry("user");
       const user_id_res = await axios.post(`${user_url.url}/getUserIDByEmail`, {
@@ -40,8 +41,8 @@ router.post('/', async(req, res) => {
           data: {
               title: title,
               description: description,
-              startDate: startDate,
-              finishDate: finishDate,
+              startDate: new Date(startDate),
+              finishDate: new Date(finishDate),
               eventType: eventType,
               location: location,
               onlineLink: onlineLink,
@@ -50,21 +51,24 @@ router.post('/', async(req, res) => {
               registration: registration,
               rules: rules,
               prizes: prizes,
-              tag: tag, 
+              tag: eventTag, 
           },
           select : {
             id: true,
           }
       });
 
+      
+
       if(timeline){
         timeline.forEach(async (t) => {
+          console.log(t.finishDate);
           await prisma.timeline.create({
             data: {
               name: t.name,
               description: t.description,
-              startDate: t.startDate,
-              finishDate: t.finishDate,
+              startDate: new Date(t.startDate),
+              finishDate: new Date(t.finishDate),
               meetingType: t.meetingType,
               location: t.location,
               onlineLink: t.onlineLink,

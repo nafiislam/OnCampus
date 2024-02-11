@@ -80,7 +80,7 @@ router.post('/', async(req, res) => {
                             link:true,
                         }
                     },
-                    tag : true,
+                    eventTag : true,
                 }
             })
 
