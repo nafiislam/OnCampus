@@ -63,6 +63,15 @@ router.post('/', async(req, res) => {
           return;
       }
 
+      const r = await axios.post(`${user_url.url}/checkBan`, {
+        pid: pid,
+        uid:user_id
+      });
+
+      if(r.status!=200){
+        res.sendStatus(400).send({message:"Banned"})
+      }
+
       var images = [];
       var files = [];
       var imageNames = [];

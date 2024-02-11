@@ -48,6 +48,15 @@ router.post('/comment', async(req, res) => {
             return;
         }
 
+        const r = await axios.post(`${user_url.url}/checkBan`, {
+            pid: pid,
+            uid:user_id
+        });
+
+        if(r.status!=200){
+        res.sendStatus(400).send({message:"Banned"})
+        }
+
         const comment = await prisma.comment.create({
             data:{
                 content:content,
@@ -129,6 +138,15 @@ router.post('/post', async(req, res) => {
         if (pid === "") {
             res.status(400).json({message: "Post id is required"});
             return;
+        }
+
+        const r = await axios.post(`${user_url.url}/checkBan`, {
+            pid: pid,
+            uid:user_id
+        });
+
+        if(r.status!=200){
+        res.sendStatus(400).send({message:"Banned"})
         }
 
         const comment = await prisma.comment.create({

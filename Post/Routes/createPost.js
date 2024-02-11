@@ -119,6 +119,15 @@ router.post('/', async(req, res) => {
           return;
       }
 
+      const r = await axios.post(`${user_url.url}/checkBan/type`, {
+        type: postType,
+        uid:user_id
+      });
+
+      if(r.status!=200){
+      res.sendStatus(400).send({message:"Banned"})
+      }
+
       var tagList = [];
       if(radio=="DISCUSSION"){
         console.log("discussion");
