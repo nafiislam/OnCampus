@@ -33,9 +33,6 @@ try {
     process.exit(0);
 }
 
-import user from './Routes/user.js';
-app.use('/', user);
-
 import getUserIDByEmail from'./Routes/getUserIDByEmail.js';
 app.use('/getUserIDByEmail',getUserIDByEmail);
 
@@ -56,6 +53,13 @@ app.use('/postUserAuth',postUserAuth);
 
 import commentUserAuth from'./Routes/commentUserAuth.js';
 app.use('/commentUserAuth',commentUserAuth);
+
+import checkBan from'./Routes/checkBan.js';
+app.use('/checkBan',checkBan);
+
+import user from './Routes/user.js';
+app.use('/', user);
+
 
 //404 error handler
 app.use((req, res, next) => {

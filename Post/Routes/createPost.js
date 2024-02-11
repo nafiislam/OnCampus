@@ -5,6 +5,41 @@ import getRegistry from '../server.js'
 import axios from 'axios';
 const router = express.Router();
 
+async function createNotification(email,postType,postID,user_id){
+  const user_url = await getRegistry("user");
+  const users_res = await axios.post(`${user_url.url}/getUserIDsByType`, {
+      email: email,
+      type: postType,
+  });
+  let users = users_res.data;
+  console.log("users: ", users);
+  if(users.length > 0){
+      users.forEach(async (user) => {
+          await prisma.notification.create({
+              data: {
+                  content: `New Post in ${postType}`,
+                  type: ReminderTag.POST,
+                  post: {
+                      connect: {
+                          id: postID,
+                      },
+                  },
+                  author: {
+                      connect: {
+                          id: user_id,
+                      },
+                  },
+                  belongsTo:{
+                      connect:{
+                          id: user.id
+                      }
+                  }
+              }
+          });
+      })
+  }
+}
+
 router.post('/', async(req, res) => {
     try{
       console.log(req.body);
@@ -82,6 +117,15 @@ router.post('/', async(req, res) => {
       if (user_id === '-1') {
           res.status(400).json({message: "User not found"});
           return;
+      }
+
+      const r = await axios.post(`${user_url.url}/checkBan/type`, {
+        type: postType,
+        uid:user_id
+      });
+
+      if(r.status!=200){
+      res.sendStatus(400).send({message:"Banned"})
       }
 
       var tagList = [];
@@ -269,6 +313,9 @@ router.post('/', async(req, res) => {
       }
       
       if(reminderCheck){
+        if(new Date(reminder).getTime()>=new Date().getTime()){
+          setTimeout(createNotification, new Date(reminder).getTime() - new Date().getTime(), email,postType,post.id,user_id);
+        }
         const rem_res = await prisma.reminder.create({
           data:{
             time: reminder,
