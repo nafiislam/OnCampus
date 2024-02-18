@@ -1,8 +1,7 @@
-import express from 'express';
-import { Tag,Role, ReminderTag, MeetingType } from '@prisma/client'
-import prisma from '../db.js'
-import getRegistry from '../server.js'
 import axios from 'axios';
+import express from 'express';
+import prisma from '../db.js';
+import getRegistry from '../server.js';
 const router = express.Router();
 
 router.post('/', async(req, res) => {
@@ -58,6 +57,9 @@ router.post('/', async(req, res) => {
           }
       });
 
+
+      console.log("ccccccccccc");
+
       
 
       if(timeline){
@@ -82,6 +84,9 @@ router.post('/', async(req, res) => {
         });
       }
 
+      console.log("bbbbbbbbbbb");
+
+
       if(resources){
         resources.forEach(async (r) => {
           await prisma.resources.create({
@@ -98,6 +103,8 @@ router.post('/', async(req, res) => {
           });
         });
       }
+
+      console.log("aaaaaaaaaaaaaaaa");
 
       res.status(200).json({message: "Event Created Successfully"});
 
