@@ -38,17 +38,17 @@ model User {
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
 
-  batchRef             Batch          @relation(fields: [batch], references: [batchName])
-  address              String?
-  bloodGroup           String?
-  dateOfBirth          DateTime?
-  section              String?
-  aboutMe              String?
-  emergencyContact     String?
-  accessGeneral        Access         @default(UNBANNED)
-  accessDept           Access         @default(UNBANNED)
-  accessBatch          Access         @default(UNBANNED)
-  accessDeptBatch      Access         @default(UNBANNED)
+  batchRef         Batch     @relation(fields: [batch], references: [batchName])
+  address          String?
+  bloodGroup       String?
+  dateOfBirth      DateTime?
+  section          String?
+  aboutMe          String?
+  emergencyContact String?
+  accessGeneral    Access    @default(UNBANNED)
+  accessDept       Access    @default(UNBANNED)
+  accessBatch      Access    @default(UNBANNED)
+  accessDeptBatch  Access    @default(UNBANNED)
 
   @@index([email])
   @@schema("user")
@@ -58,6 +58,7 @@ model Batch {
   id        String @id @default(uuid())
   batchName String @unique
   User      User[]
+
   @@schema("user")
 }
 
@@ -227,9 +228,9 @@ model Notification {
 enum Access {
   BANNED
   UNBANNED
+
   @@schema("user")
 }
-
 
 enum Tag {
   TUITION
@@ -283,6 +284,7 @@ enum dept {
   Nanomaterials_and_Ceramic_Engineering
   Architecture
   Electrical_and_Electronics_Engineering
+
   @@schema("user")
 }
 
@@ -290,8 +292,8 @@ model Event {
   id           String      @id @default(uuid())
   title        String
   description  String
-  startDate    DateTime
-  finishDate   DateTime?
+  startDate    String
+  finishDate   String?
   eventType    MeetingType
   location     String?
   onlineLink   String?
@@ -304,7 +306,7 @@ model Event {
   prizes       String?
   timeline     Timeline[]
   resources    Resources[]
-  tag          EventTag
+  tag     EventTag
 
   @@schema("event")
 }
@@ -324,8 +326,8 @@ model Timeline {
   id          String       @id @default(uuid())
   name        String
   description String?
-  startDate   DateTime
-  finishDate  DateTime?
+  startDate   String
+  finishDate  String?
   meetingType MeetingType?
   location    String?
   onlineLink  String?
