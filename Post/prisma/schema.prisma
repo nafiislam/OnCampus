@@ -112,7 +112,7 @@ model Post {
   updatedAt       DateTime      @updatedAt
   commentAllow    Boolean       @default(true)
   reminders       Reminder[]
-  notification    Notification?
+  notification    Notification[]
   open            Boolean       @default(true)
 
   bloodInfo   BloodInfo?
@@ -220,7 +220,7 @@ model Notification {
   belongsTo   User        @relation("myNotifications", fields: [belongsToId], references: [id], onDelete: Cascade)
   belongsToId String
   post        Post?       @relation(fields: [postID], references: [id], onDelete: Cascade)
-  postID      String?     @unique
+  postID      String?
 
   @@schema("post")
 }
