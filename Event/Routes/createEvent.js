@@ -41,8 +41,8 @@ router.post('/', async(req, res) => {
           data: {
               title: title,
               description: description,
-              startDate: new Date("2021-10-10T10:00:00Z"),
-              finishDate: new Date("2021-10-10T10:00:00Z"),
+              startDate: startDate,
+              finishDate: finishDate,
               eventType: eventType,
               location: location,
               onlineLink: onlineLink,
@@ -67,8 +67,8 @@ router.post('/', async(req, res) => {
             data: {
               name: t.name,
               description: t.description,
-              startDate: new Date("2021-10-10T10:00:00Z"),
-              finishDate: new Date("2021-10-10T10:00:00Z"),
+              startDate: startDate,
+              finishDate: finishDate,
               meetingType: "Offline",
               location: t.location,
               onlineLink: t.onlineLink,

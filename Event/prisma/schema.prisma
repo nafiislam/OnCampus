@@ -292,8 +292,8 @@ model Event {
   id           String      @id @default(uuid())
   title        String
   description  String
-  startDate    DateTime
-  finishDate   DateTime?
+  startDate    String
+  finishDate   String?
   eventType    MeetingType
   location     String?
   onlineLink   String?
@@ -326,8 +326,8 @@ model Timeline {
   id          String       @id @default(uuid())
   name        String
   description String?
-  startDate   DateTime
-  finishDate  DateTime?
+  startDate   String
+  finishDate  String?
   meetingType MeetingType?
   location    String?
   onlineLink  String?
