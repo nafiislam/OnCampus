@@ -3,6 +3,7 @@ import pkg from '@prisma/client'
 const { Role } = pkg;
 import prisma from '../db.js'
 import { validateRequestUser } from './validateRequest.js'
+import updatePassword from '../updatePassword.js';
 
 
 const router = express.Router();
@@ -27,132 +28,132 @@ async function getMyInfo(email) {
                 },
             },
             posts: {
-                select:{
-                    id:true,
-                    title:true,
-                    content:true,
-                    type:true,
-                    author:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    type: true,
+                    author: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    anonymous:true,
-                    isPoll:true,
-                    tags:true,
-                    likedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    anonymous: true,
+                    isPoll: true,
+                    tags: true,
+                    likedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    savedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    savedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    createdAt:true,
-                    updatedAt:true,
-                    commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
+                    createdAt: true,
+                    updatedAt: true,
+                    commentAllow: true,
+                    bloodInfo: true,
+                    tuitionInfo: true,
+                    productInfo: true,
+                    open: true,
                 }
             },
             reminders: true,
             myNotifications: true,
             createdNotifications: true,
             savedPosts: {
-                select:{
-                    id:true,
-                    title:true,
-                    content:true,
-                    type:true,
-                    author:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    type: true,
+                    author: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    anonymous:true,
-                    isPoll:true,
-                    tags:true,
-                    likedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    anonymous: true,
+                    isPoll: true,
+                    tags: true,
+                    likedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    savedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    savedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    createdAt:true,
-                    updatedAt:true,
-                    commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
+                    createdAt: true,
+                    updatedAt: true,
+                    commentAllow: true,
+                    bloodInfo: true,
+                    tuitionInfo: true,
+                    productInfo: true,
+                    open: true,
                 }
             },
             likedPosts: {
-                select:{
-                    id:true,
-                    title:true,
-                    content:true,
-                    type:true,
-                    author:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    type: true,
+                    author: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    anonymous:true,
-                    isPoll:true,
-                    tags:true,
-                    likedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    anonymous: true,
+                    isPoll: true,
+                    tags: true,
+                    likedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    savedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    savedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    createdAt:true,
-                    updatedAt:true,
-                    commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
+                    createdAt: true,
+                    updatedAt: true,
+                    commentAllow: true,
+                    bloodInfo: true,
+                    tuitionInfo: true,
+                    productInfo: true,
+                    open: true,
                 }
             }
         }
@@ -178,45 +179,45 @@ async function getUserInfo(email) {
                 },
             },
             posts: {
-                select:{
-                    id:true,
-                    title:true,
-                    content:true,
-                    type:true,
-                    author:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    type: true,
+                    author: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    anonymous:true,
-                    isPoll:true,
-                    tags:true,
-                    likedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    anonymous: true,
+                    isPoll: true,
+                    tags: true,
+                    likedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    savedBy:{
-                        select:{
-                            profilePicture:true,
-                            name:true,
-                            id:true,
-                            email:true,
+                    savedBy: {
+                        select: {
+                            profilePicture: true,
+                            name: true,
+                            id: true,
+                            email: true,
                         }
                     },
-                    createdAt:true,
-                    updatedAt:true,
-                    commentAllow:true,
-                    bloodInfo:true,
-                    tuitionInfo:true,
-                    productInfo:true,
-                    open:true,
+                    createdAt: true,
+                    updatedAt: true,
+                    commentAllow: true,
+                    bloodInfo: true,
+                    tuitionInfo: true,
+                    productInfo: true,
+                    open: true,
                 }
             }
         }
@@ -368,6 +369,55 @@ router.post('/updateProfile', async (req, res) => {
         }
     } else {
         res.status(400).json({ message: "Invalid type" });
+    }
+
+});
+
+router.post('/updatePassword', async (req, res) => {
+    const email = req.headers.email;
+    const {
+        previousPassword,
+        newPassword
+    } = req.body;
+
+    if (previousPassword == undefined) {
+        res.status(400).json({ message: "Previous Password is required" });
+        return;
+    }
+
+    if (newPassword == undefined) {
+        res.status(400).json({ message: "New Password is required" });
+        return;
+    }
+
+    if (previousPassword === newPassword) {
+        res.status(400).json({ message: "New Password cannot be same as previous password" });
+        return;
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+
+        if (user == null) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        const result = await updatePassword(email, previousPassword, newPassword);
+        if (result.success) {
+            res.send({ message: "Password updated successfully" });
+        } else {
+            res.status(400).json({ message: result.msg });
+        }
+
+
+    } catch (error) {
+        console.error("Error while updating user password:", error);
+        res.status(500).json({ message: "Error!" });
     }
 
 });
