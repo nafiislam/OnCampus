@@ -75,6 +75,11 @@ export default async function updatePassword(userEmail, previousPassword, newPas
             console.log(e.responseData)
         }
 
+        return {
+            msg: "Password Updated",
+            success: true
+        }
+
     }
     catch (e) {
         console.log(e.responseData)

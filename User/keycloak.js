@@ -4,27 +4,29 @@ const baseUrl = 'http://127.0.0.1:4000'
 const adminUser = 'oncampusbuet@gmail.com'
 const adminPassword = 'admin'
 const realmName = 'OnCampus'
-const kcAdminClient = new KcAdminClient({
-    baseUrl: baseUrl,
-    realmName: 'master',
-});
 
-// Authorize with username / password
-await kcAdminClient.auth({
-    username: adminUser,
-    password: adminPassword,
-    grantType: 'password',
-    clientId: 'admin-cli',
-});
 
-// Override client configuration for all further requests:
-kcAdminClient.setConfig({
-    realmName: realmName,
-});
 
 // var new_users = await kcAdminClient.users.find({ first: 0, max: 10 });
 
 async function createUser(email, password) {
+    const kcAdminClient = new KcAdminClient({
+        baseUrl: baseUrl,
+        realmName: 'master',
+    });
+    // Authorize with username / password
+    await kcAdminClient.auth({
+        username: adminUser,
+        password: adminPassword,
+        grantType: 'password',
+        clientId: 'admin-cli',
+    });
+
+    // Override client configuration for all further requests:
+    kcAdminClient.setConfig({
+        realmName: realmName,
+    });
+
     const res = await kcAdminClient.users.create({
         realm: realmName,
         firstName: '',
@@ -50,6 +52,8 @@ async function createUser(email, password) {
     // const role = await kcAdminClient.roles.findOneByName({
     //     name: roleName,
     //   });
+    // console.log('gere')
+
     await kcAdminClient.users.addRealmRoleMappings({
         id: res.id,
         roles: [
@@ -104,9 +108,38 @@ const deptMapper = {
 
 async function createUsers(startId, endId) {
 
+    const kcAdminClient = new KcAdminClient({
+        baseUrl: baseUrl,
+        realmName: 'master',
+    });
+
+    try {
+        // Authorize with username / password
+        await kcAdminClient.auth({
+            username: adminUser,
+            password: adminPassword,
+            grantType: 'password',
+            clientId: 'admin-cli',
+        });
+
+        // Override client configuration for all further requests:
+        kcAdminClient.setConfig({
+            realmName: realmName,
+        });
+    } catch (e) {
+        console.log(e.responseData)
+        return {
+            msg: "Internal Server Error",
+            success: false
+        }
+    }
+
 
     for (let i = startId; i <= endId; i++) {
         try {
+
+            // Override client configuration for all further requests:
+
             const users = await kcAdminClient.users.find({ email: `${i}@${deptMapper[i.toString().slice(2, 4)]}.buet.ac.bd` });
             // console.log(users)
             if (users.length != 0) {
@@ -146,7 +179,105 @@ async function createUsers(startId, endId) {
     }
 }
 
+
+async function changeRole(email, prevRole, newRole) {
+    const kcAdminClient = new KcAdminClient({
+        baseUrl: baseUrl,
+        realmName: 'master',
+    });
+
+    try {
+        // Authorize with username / password
+        await kcAdminClient.auth({
+            username: adminUser,
+            password: adminPassword,
+            grantType: 'password',
+            clientId: 'admin-cli',
+        });
+
+        // Override client configuration for all further requests:
+        kcAdminClient.setConfig({
+            realmName: realmName,
+        });
+    } catch (e) {
+        console.log(e.responseData)
+        return {
+            msg: "Internal Server Error",
+            success: false
+        }
+    }
+    try {
+        let user = await kcAdminClient.users.find({ email: email });
+        user = user[0]
+
+        console.log(user)
+
+        if (user.length == 0) {
+            return {
+                msg: "User not found",
+                success: false
+            }
+        }
+
+        console.log(user)
+
+        let role = await kcAdminClient.roles.findOneByName({
+            name: prevRole,
+        });
+
+        if (role == null) {
+            return {
+                msg: "Role not found",
+                success: false
+            }
+        }
+
+        await kcAdminClient.users.delRealmRoleMappings({
+            id: user.id,
+            roles: [
+                { id: role.id, name: prevRole }
+            ],
+        });
+
+        console.log('Role removed')
+
+        role = await kcAdminClient.roles.findOneByName({
+            name: newRole,
+        });
+
+        if (role == null) {
+            return {
+                msg: "Role not found",
+                success: false
+            }
+        }
+
+
+        await kcAdminClient.users.addRealmRoleMappings({
+            id: user.id,
+            roles: [
+                { id: role.id, name: newRole }
+            ],
+        });
+
+        console.log('Role added')
+
+        return {
+            msg: "Role added successfully",
+            success: true
+        }
+    } catch (e) {
+        console.log(e.responseData)
+        return {
+            msg: "Internal Server Error",
+            success: false
+        }
+    }
+
+}
+
 export {
     createUsers,
-    deptMapper
+    deptMapper,
+    changeRole
 }

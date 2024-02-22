@@ -1,9 +1,9 @@
 import express from 'express'
 import pkg from '@prisma/client'
-const { clubRole, dept, Access } = pkg
+const { clubRole, dept, Access, Role } = pkg
 import prisma from '../db.js'
 import { validateRequestAdmin } from './validateRequest.js'
-import { createUsers } from '../keycloak.js'
+import { createUsers, changeRole } from '../keycloak.js'
 
 const router = express.Router();
 
@@ -24,6 +24,15 @@ const deptMapper = {
     '17': 'Nanomaterials_and_Ceramic_Engineering',
     '18': 'Biomedical_Engineering'
 }
+
+// const newUser = await prisma.user.create({
+//     data: {
+//         email: "1812025@name.buet.ac.bd",
+//         department: dept['Naval_Architecture_and_Marine_Engineering'],
+//         batch: '18'
+//         }
+
+// })
 
 async function createStudents(startId, endId) {
 
@@ -69,24 +78,18 @@ async function createStudents(startId, endId) {
         }
     }
 
-    const batch = startId.slice(0, 2)
+    const batchID = startId.slice(0, 2)
     const department = deptMapper[startId.slice(2, 4)]
-
+    console.log(batchID, department)
     try {
         const allCreatedUsers = await createUsers(startId, endId)
-
         if (allCreatedUsers.success) {
             for (let user of allCreatedUsers.data) {
                 const newUser = await prisma.user.create({
                     data: {
                         email: user.email,
                         department: dept[department],
-                        batch: {
-                            connectOrCreate: {
-                                where: { batchName: batch },
-                                create: { batchName: batch }
-                            }
-                        }
+                        batch: batchID,
                     }
                 })
             }
@@ -269,13 +272,14 @@ router.get('/getBatch', async (req, res) => {
 
 router.get('/getDept', async (req, res) => {
     console.log("getDept")
-
     const depts = []
-    for (let d of Object.values(dept)) {
-        depts.push(d)
+    for (let d of Object.keys(deptMapper)) {
+        depts.push({
+            value: deptMapper[d],
+            key: d
+        })
     }
-    // console.log(depts)
-
+    console.log(depts)
     res.send(depts)
 })
 
@@ -439,6 +443,62 @@ router.post("/updateClubRoles", async (req, res) => {
 
 });
 
+
+router.post("/updateRole", async (req, res) => {
+
+    console.log(req.body)
+
+    const {
+        email,
+        prevRole,
+        newRole
+    } = req.body;
+
+    if (email == undefined || prevRole == undefined || newRole == undefined) {
+        res.status(400).json({ message: "All fields are required" });
+        return;
+    }
+
+    if (email === "") {
+        res.status(400).json({ message: "Email is required" });
+        return;
+    }
+
+    if (prevRole === "") {
+        res.status(400).json({ message: "Previous Role is required" });
+        return;
+    }
+
+    if (newRole === "") {
+        res.status(400).json({ message: "New Role is required" });
+        return;
+    }
+
+    try {
+
+        const result = await changeRole(email, prevRole, newRole)
+        console.log(result)
+        if (!result.success) {
+            res.status(500).json({ message: result.msg });
+            return;
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                email: email
+            },
+            data: {
+                role: Role[newRole.toUpperCase()],
+            }
+        });
+
+        res.send({ message: "User role updated" });
+    } catch (error) {
+        console.error("Error while updating user role:", error);
+        res.status(500).json({ message: "Error!" });
+    }
+
+});
 
 
 router.use((req, res, next) => {

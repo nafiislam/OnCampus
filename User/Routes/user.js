@@ -313,6 +313,8 @@ router.post('/updateProfile', async (req, res) => {
         }
     } else if (type === "profileUpdate") {
         const {
+            name,
+            session,
             aboutMe,
             address,
             bloodGroup,
@@ -320,15 +322,9 @@ router.post('/updateProfile', async (req, res) => {
             emergencyContact,
             phoneNumber,
             section,
-            role
         } = data;
 
         console.log("here");
-
-        if (role == null) {
-            res.status(400).json({ message: "Role is Required" });
-            return;
-        }
 
         let dob = null;
         if (dateOfBirth) {
@@ -341,14 +337,14 @@ router.post('/updateProfile', async (req, res) => {
 
         }
 
-
-
         try {
             const user = await prisma.user.update({
                 where: {
                     email: email
                 },
                 data: {
+                    name: name,
+                    session: session,
                     aboutMe: aboutMe,
                     address: address,
                     bloodGroup: bloodGroup,
@@ -356,8 +352,6 @@ router.post('/updateProfile', async (req, res) => {
                     emergencyContact: emergencyContact,
                     phoneNumber: phoneNumber,
                     section: section,
-                    role: role
-
                 }
             });
 
@@ -379,6 +373,9 @@ router.post('/updatePassword', async (req, res) => {
         previousPassword,
         newPassword
     } = req.body;
+
+    console.log(previousPassword, newPassword);
+    console.log(email);
 
     if (previousPassword == undefined) {
         res.status(400).json({ message: "Previous Password is required" });
@@ -407,6 +404,8 @@ router.post('/updatePassword', async (req, res) => {
             return;
         }
 
+        console.log(user);
+
         const result = await updatePassword(email, previousPassword, newPassword);
         if (result.success) {
             res.send({ message: "Password updated successfully" });
@@ -414,6 +413,8 @@ router.post('/updatePassword', async (req, res) => {
             res.status(400).json({ message: result.msg });
         }
 
+        console.log(result);
+        res.send(result);
 
     } catch (error) {
         console.error("Error while updating user password:", error);
