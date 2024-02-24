@@ -42,6 +42,9 @@ app.use('/getEvent',getEvent);
 import getEvents from './Routes/getEvents.js';
 app.use('/getEvents',getEvents);
 
+import checkLocation from './Routes/checkLocation.js';
+app.use('/checkLocation',checkLocation);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
