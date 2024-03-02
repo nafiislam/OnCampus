@@ -60,11 +60,6 @@ router.get('/', async(req, res) => {
             }
         })
 
-        if(user.accessGeneral === "BANNED"){
-            res.status(400).json({message: "You don't have access to this feature"});
-            return;
-        }
-
         console.log(user); 
 
         var posts = await prisma.post.findMany({
