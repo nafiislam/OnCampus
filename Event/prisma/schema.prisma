@@ -52,6 +52,10 @@ model User {
   accessBatch      Access    @default(UNBANNED)
   accessDeptBatch  Access    @default(UNBANNED)
 
+  participatingEvent Event[] @relation("participatedBy")
+  savedEvent         Event[] @relation("savedBy")
+  createdEvents      Event[] @relation("eventAuthor")
+
   @@index([email])
   @@schema("user")
 }
@@ -108,8 +112,10 @@ model Post {
   savedBy         User[]         @relation("SavedPosts")
   viewedBy        User[]         @relation("ViewedPosts")
   intBy           User[]         @relation("IntPosts")
+
   reportedBy      User[]         @relation("ReportedPosts")
   reportedCount   Int            @default(0)
+  
   attachments     String[]
   attachmentNames String[]
   createdAt       DateTime       @default(now())
@@ -118,6 +124,7 @@ model Post {
   reminders       Reminder[]
   notification    Notification[]
   open            Boolean        @default(true)
+
 
   bloodInfo   BloodInfo?
   tuitionInfo TuitionInfo?
@@ -311,6 +318,10 @@ model Event {
   timeline     Timeline[]
   resources    Resources[]
   tag          EventTag
+  participatedBy User[] @relation("participatedBy")
+  savedBy        User[] @relation("savedBy")
+  createdBy      User   @relation("eventAuthor", fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
 
   @@schema("event")
 }
