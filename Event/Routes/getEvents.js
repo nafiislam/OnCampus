@@ -9,7 +9,6 @@ router.post('/', async(req, res) => {
     try{
         console.log(req.body);
         const {email ,admin} = req.headers;
-        const {id} = req.body;
 
         console.log("email: ", email);
         

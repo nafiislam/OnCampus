@@ -50,6 +50,10 @@ model User {
   accessBatch      Access    @default(UNBANNED)
   accessDeptBatch  Access    @default(UNBANNED)
 
+  participatingEvent Event[] @relation("participatedBy")
+  savedEvent         Event[] @relation("savedBy")
+  createdEvents      Event[] @relation("eventAuthor")
+
   @@index([email])
   @@schema("user")
 }
@@ -89,11 +93,11 @@ model ClubMember {
 }
 
 model Post {
-  id              String        @id @default(uuid())
+  id              String         @id @default(uuid())
   title           String
   content         String
   type            String
-  author          User          @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  author          User           @relation("WrittenPosts", fields: [authorId], references: [id], onDelete: Cascade)
   authorId        String
   comments        Comment[]
   images          String[]
@@ -102,18 +106,20 @@ model Post {
   isPoll          Boolean
   options         Option[]
   tags            Tag[]
-  likedBy         User[]        @relation("LikedPosts")
-  savedBy         User[]        @relation("SavedPosts")
-  viewedBy        User[]        @relation("ViewedPosts")
-  intBy           User[]        @relation("IntPosts")
+  likedBy         User[]         @relation("LikedPosts")
+  savedBy         User[]         @relation("SavedPosts")
+  viewedBy        User[]         @relation("ViewedPosts")
+  intBy           User[]         @relation("IntPosts")
   attachments     String[]
   attachmentNames String[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  commentAllow    Boolean       @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  commentAllow    Boolean        @default(true)
   reminders       Reminder[]
   notification    Notification[]
-  open            Boolean       @default(true)
+  open            Boolean        @default(true)
+
+  reportCount Int @default(0)
 
   bloodInfo   BloodInfo?
   tuitionInfo TuitionInfo?
@@ -306,7 +312,12 @@ model Event {
   prizes       String?
   timeline     Timeline[]
   resources    Resources[]
-  tag     EventTag
+  tag          EventTag
+
+  participatedBy User[] @relation("participatedBy")
+  savedBy        User[] @relation("savedBy")
+  createdBy      User   @relation("eventAuthor", fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
 
   @@schema("event")
 }

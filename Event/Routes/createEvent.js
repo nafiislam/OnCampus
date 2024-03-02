@@ -50,7 +50,12 @@ router.post('/', async(req, res) => {
               registration: registration,
               rules: rules,
               prizes: prizes,
-              tag: eventTag, 
+              tag: eventTag,
+              createdBy: {
+                  connect: {
+                      id: user_id,
+                  },
+              }, 
           },
           select : {
             id: true,
