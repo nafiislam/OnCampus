@@ -331,7 +331,7 @@ model Resources {
   description String
   link        String
 
-  Event   Event?  @relation(fields: [eventId], references: [id])
+  Event   Event?  @relation(fields: [eventId], references: [id],onDelete: Cascade)
   eventId String?
 
   @@schema("event")
@@ -347,7 +347,7 @@ model Timeline {
   location    String?
   onlineLink  String?
 
-  Event   Event?  @relation(fields: [eventId], references: [id])
+  Event   Event?  @relation(fields: [eventId], references: [id],onDelete: Cascade)
   eventId String?
 
   @@schema("event")

@@ -32,7 +32,7 @@ CREATE UNIQUE INDEX "_savedBy_AB_unique" ON "event"."_savedBy"("A", "B");
 CREATE INDEX "_savedBy_B_index" ON "event"."_savedBy"("B");
 
 -- AddForeignKey
-ALTER TABLE "event"."Event" ADD CONSTRAINT "Event_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"."User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "event"."Event" ADD CONSTRAINT "Event_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "event"."_participatedBy" ADD CONSTRAINT "_participatedBy_A_fkey" FOREIGN KEY ("A") REFERENCES "event"."Event"("id") ON DELETE CASCADE ON UPDATE CASCADE;

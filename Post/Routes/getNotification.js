@@ -34,6 +34,9 @@ router.get('/new', async(req, res) => {
             include:{
                 author:true,
                 belongsTo:true,
+            },
+            orderBy:{
+                createdAt:"desc"
             }
         })
 
@@ -118,6 +121,9 @@ router.get('/all', async(req, res) => {
             include:{
                 author:true,
                 belongsTo:true,
+            },
+            orderBy:{
+                createdAt:"desc"
             }
         })
         res.status(200).json({notis:notifications});
