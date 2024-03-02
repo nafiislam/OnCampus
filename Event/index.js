@@ -42,6 +42,20 @@ app.use('/getEvent',getEvent);
 import getEvents from './Routes/getEvents.js';
 app.use('/getEvents',getEvents);
 
+
+import notice from './Routes/notice.js';
+app.use('/notice',notice);
+
+import checkLocation from './Routes/checkLocation.js';
+app.use('/checkLocation',checkLocation);
+
+import participateEvent from './Routes/participateEvent.js';
+app.use('/participateEvent',participateEvent);
+
+import addToGoogleCalender from './Routes/addToGoogleCalender.js';
+app.use('/addToGoogleCalender',addToGoogleCalender);
+
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});

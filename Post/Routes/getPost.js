@@ -135,6 +135,14 @@ router.post('/', async (req, res) => {
                         email:true,
                     }
                 },
+                reportedBy:{
+                    select:{
+                        profilePicture:true,
+                        name:true,
+                        id:true,
+                        email:true,
+                    }
+                },
                 createdAt:true,
                 updatedAt:true,
                 commentAllow:true,

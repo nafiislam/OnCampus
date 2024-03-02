@@ -67,6 +67,9 @@ router.post('/General', async(req, res) => {
                     //     }
                     // }
                 },
+                orderBy:{
+                    createdAt:"desc"
+                },
                 select:{
                     id:true,
                     title:true,
@@ -126,6 +129,9 @@ router.post('/General', async(req, res) => {
                     //         equals:user.department,
                     //     }
                     // }
+                },
+                orderBy:{
+                    createdAt:"desc"
                 },
                 select:{
                     id:true,
@@ -237,6 +243,9 @@ router.post('/Batch', async(req, res) => {
                         },
                     }
                 },
+                orderBy:{
+                    createdAt:"desc"
+                },
                 select:{
                     id:true,
                     title:true,
@@ -293,6 +302,9 @@ router.post('/Batch', async(req, res) => {
                             equals:user.batch,
                         },
                     }
+                },
+                orderBy:{
+                    createdAt:"desc"
                 },
                 select:{
                     id:true,
@@ -405,6 +417,9 @@ router.post('/Dept', async(req, res) => {
                         }
                     }
                 },
+                orderBy:{
+                    createdAt:"desc"
+                },
                 select:{
                     id:true,
                     title:true,
@@ -461,6 +476,9 @@ router.post('/Dept', async(req, res) => {
                             equals:user.department,
                         }
                     }
+                },
+                orderBy:{
+                    createdAt:"desc"
                 },
                 select:{
                     id:true,
@@ -576,6 +594,9 @@ router.post('/BatchDept', async(req, res) => {
                         }
                     }
                 },
+                orderBy:{
+                    createdAt:"desc"
+                },
                 select:{
                     id:true,
                     title:true,
@@ -635,6 +656,9 @@ router.post('/BatchDept', async(req, res) => {
                             equals:user.department,
                         }
                     }
+                },
+                orderBy:{
+                    createdAt:"desc"
                 },
                 select:{
                     id:true,

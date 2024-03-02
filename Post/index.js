@@ -78,6 +78,12 @@ app.use('/getNotification',getNotification);
 import updatePost from './Routes/updatePost.js';
 app.use('/updatePost',updatePost);
 
+import report from './Routes/report.js';
+app.use('/report',report);
+
+import reportedPosts from './Routes/reportedPosts.js';
+app.use('/reportedPosts',reportedPosts);
+
 //404 error handler
 app.use((req, res, next) => {
     res.status(404).json({message: "Not Found"});
