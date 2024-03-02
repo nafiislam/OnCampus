@@ -363,3 +363,34 @@ enum MeetingType {
 
   @@schema("event")
 }
+
+model Album {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  images      Image[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@schema("user")
+}
+
+model Image {
+  id        String @id @default(uuid())
+  panorama  String
+  thumbnail String
+  name      String
+  caption   String
+  gps_lat   String
+  gps_long  String
+  gps_alt   String
+
+  links String[] @default([])
+
+  album     Album    @relation(fields: [albumId], references: [id])
+  albumId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("user")
+}
