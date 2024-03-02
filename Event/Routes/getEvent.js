@@ -39,7 +39,8 @@ router.post('/', async(req, res) => {
                 email:true,
                 profilePicture:true,
             }
-        })
+        })         
+
 
         var event = await prisma.event.findUnique({
                 where:{
@@ -61,6 +62,7 @@ router.post('/', async(req, res) => {
                     registration:true,
                     rules:true,
                     prizes:true,
+                    participatedBy:true,
                     timeline: {
                         select: {
                             id:true,
@@ -81,13 +83,28 @@ router.post('/', async(req, res) => {
                         }
                     },
                     tag : true,
+                    participatedBy: {
+                        select: {
+                            id:true,
+                            name:true,
+                            email:true,
+                            profilePicture:true,
+                        }
+                    }
                 }
-            })
+            })   
+            const isParticipating = event.participatedBy.some(user => user.id === user_id);
+
+            
+
 
             event = {
                 ...event,
                 user: user,
+                isParticipating : isParticipating
             }
+
+            console.log(event);
 
         if(event){
             res.status(200).json({event});
