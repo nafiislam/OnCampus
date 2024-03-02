@@ -24,6 +24,7 @@ model User {
   savedPosts           Post[]         @relation("SavedPosts")
   viewedPosts          Post[]         @relation("ViewedPosts")
   intPosts             Post[]         @relation("IntPosts")
+  reportedPosts        Post[]         @relation("ReportedPosts")
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   role                 Role           @default(USER)
@@ -37,6 +38,7 @@ model User {
   reminders            Reminder[]
   createdNotifications Notification[] @relation("createdNotifications")
   myNotifications      Notification[] @relation("myNotifications")
+  myNotices            Notice[]
 
   batchRef         Batch     @relation(fields: [batch], references: [batchName])
   address          String?
@@ -110,6 +112,10 @@ model Post {
   savedBy         User[]         @relation("SavedPosts")
   viewedBy        User[]         @relation("ViewedPosts")
   intBy           User[]         @relation("IntPosts")
+
+  reportedBy      User[]         @relation("ReportedPosts")
+  reportedCount   Int            @default(0)
+  
   attachments     String[]
   attachmentNames String[]
   createdAt       DateTime       @default(now())
@@ -119,7 +125,6 @@ model Post {
   notification    Notification[]
   open            Boolean        @default(true)
 
-  reportCount Int @default(0)
 
   bloodInfo   BloodInfo?
   tuitionInfo TuitionInfo?
@@ -313,7 +318,6 @@ model Event {
   timeline     Timeline[]
   resources    Resources[]
   tag          EventTag
-
   participatedBy User[] @relation("participatedBy")
   savedBy        User[] @relation("savedBy")
   createdBy      User   @relation("eventAuthor", fields: [userId], references: [id], onDelete: Cascade)
@@ -345,6 +349,22 @@ model Timeline {
 
   Event   Event?  @relation(fields: [eventId], references: [id])
   eventId String?
+
+  @@schema("event")
+}
+
+model Notice {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  images          String[]
+  imageNames      String[]
+  attachments     String[]
+  attachmentNames String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  author          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String?
 
   @@schema("event")
 }
