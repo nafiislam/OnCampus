@@ -1,141 +1,132 @@
 import express from 'express'
 import pkg from '@prisma/client'
-const { clubRole, dept, Access } = pkg
+const { clubRole, dept, Access, Role } = pkg
 import prisma from '../db.js'
 import { validateRequestAdmin } from './validateRequest.js'
+import { createUsers, changeRole } from '../keycloak.js'
 
 const router = express.Router();
 
 router.use(validateRequestAdmin);
 
-async function createUser(user) {
+const deptMapper = {
+    '01': 'Architecture',
+    '02': 'Chemical_Engineering',
+    '04': 'Civil_Engineering',
+    '05': 'Computer_Science_and_Engineering',
+    '06': 'Electrical_and_Electronics_Engineering',
+    '08': 'Industrial_and_Production_Engineering',
+    '10': 'Mechanical_Engineering',
+    '11': 'Materials_and_Metallurgical_Engineering',
+    '12': 'Naval_Architecture_and_Marine_Engineering',
+    '15': 'Urban_and_Regional_Planning',
+    '16': 'Water_Resource_Engineering',
+    '17': 'Nanomaterials_and_Ceramic_Engineering',
+    '18': 'Biomedical_Engineering'
+}
 
-    const {
-        name,
-        email,
-        batch,
-        department,
-        session,
-        meritPosition,
-        clubRoles
-    } = user;
+// const newUser = await prisma.user.create({
+//     data: {
+//         email: "1812025@name.buet.ac.bd",
+//         department: dept['Naval_Architecture_and_Marine_Engineering'],
+//         batch: '18'
+//         }
 
-    if (name == undefined || email == undefined || batch == undefined || department == undefined || session == undefined || meritPosition == undefined || clubRoles == undefined) {
-        return { message: "All fields are required" };
-    }
+// })
 
-    if (name === "") {
-        return { message: "Name is required" };
-    }
+async function createStudents(startId, endId) {
 
-    if (email === "") {
-        return { message: "email is required" };
-    }
-
-    if (batch === "") {
-        return { message: "Batch is required" };
-    }
-
-    if (department === "") {
-        return { message: "Department is required" };
-    }
-
-    if (dept[department] == undefined) {
-        return { message: "Invalid department" };
-    }
-
-    if (session === "") {
-        return { message: "Session is required" };
-    }
-
-    if (meritPosition === "") {
-        return { message: "Merit Position is required" };
-    }
-
-    if (!Array.isArray(clubRoles)) {
-        return { message: "Invalid request body" };
-    }
-
-    for (let club_role of clubRoles) {
-        if (club_role.clubName == undefined || club_role.role == undefined) {
-            return { message: "All fields are required" };
-        }
-
-        if (club_role.clubName === "") {
-            return { message: "Club Name is required" };
-        }
-
-        if (club_role.role === "") {
-            return { message: "Role is required" };
-        }
-
-        if (clubRole[club_role.role.toUpperCase()] == undefined) {
-            return { message: "Invalid role" };
+    if (startId.length != 7 || endId.length != 7) {
+        return {
+            msg: "Invalid ID",
+            success: false
         }
     }
 
+    if (isNaN(startId) || isNaN(endId)) {
+        return {
+            msg: "Invalid ID",
+            success: false
+        }
+    }
+
+    if (startId.slice(0, 2) != endId.slice(0, 2)) {
+        return {
+            msg: "Invalid ID",
+            success: false
+        }
+    }
+
+    if (startId.slice(2, 4) != endId.slice(2, 4)) {
+        return {
+            msg: "Invalid ID",
+            success: false
+        }
+    }
+
+    if (startId.slice(4, 7) > endId.slice(4, 7)) {
+        return {
+            msg: "Invalid ID",
+            success: false
+        }
+    }
+
+    if (deptMapper[startId.slice(2, 4)] == undefined) {
+        return {
+            msg: "Invalid ID",
+            success: false
+        }
+    }
+
+    const batchID = startId.slice(0, 2)
+    const department = deptMapper[startId.slice(2, 4)]
+    console.log(batchID, department)
     try {
-        await prisma.$transaction(async (tx) => {
-
-            const newUser = await tx.user.create({
-                data: {
-                    name: user.name,
-                    email: user.email,
-                    batch: user.batch,
-                    department: dept[user.department],
-                    session: user.session,
-                    meritPosition: user.meritPosition,
-                }
-            })
-
-            console.log(newUser)
-
-            const clubRoles = user.clubRoles
-
-            for (let club_role of clubRoles) {
-                console.log(clubRole[club_role.role.toUpperCase()])
-                const updatedClub = await tx.club.update({
-                    where: {
-                        name: club_role.clubName,
-                    },
+        const allCreatedUsers = await createUsers(startId, endId)
+        if (allCreatedUsers.success) {
+            for (let user of allCreatedUsers.data) {
+                const newUser = await prisma.user.create({
                     data: {
-                        members: {
-                            create: {
-                                role: clubRole[club_role.role.toUpperCase()],
-                                email: email,
-                            },
-                        },
-                    },
-                    include: {
-                        members: true, // Include the members in the response
-                    },
+                        email: user.email,
+                        department: dept[department],
+                        batch: batchID,
+                    }
                 })
-                console.log(updatedClub)
             }
         }
-        )
 
-        return { message: 'user successfully created' };
-    } catch (error) {
-
-
-        // Handle the error
-        console.error('Error during transaction:', error);
-        return { message: 'bad request' };
-    } finally {
-        // Ensure that the Prisma client is properly disconnected
-        await prisma.$disconnect();
+        console.log(allCreatedUsers)
+        return allCreatedUsers
+    } catch (e) {
+        console.log(e)
+        return {
+            msg: "Internal Server Error",
+            success: false
+        }
     }
+
 }
 
 router.post('/createUser', async (req, res) => {
     console.log(req.body)
     console.log(req.headers)
 
-    const user = req.body
-    const msg = await createUser(user)
+    const {
+        startId,
+        endId
+    } = req.body;
 
-    res.send(msg);
+    if (startId == undefined || endId == undefined) {
+        res.status(400).json({ message: "All fields are required" });
+    }
+
+    const result = await createStudents(startId, endId)
+
+    if (result.success) {
+        res.send(result.data)
+    } else {
+        res.status(500).json({ message: result.msg });
+    }
 
 });
 
@@ -146,32 +137,32 @@ router.post('/createClub', async (req, res) => {
     const members = req.body.members
 
     if (clubName == undefined || members == undefined) {
-        res.send({ message: "All fields are required" });
+        res.status(400).send({ message: "All fields are required" });
     }
 
     if (clubName === "") {
-        res.send({ message: "Club Name is required" });
+        res.status(400).send({ message: "Club Name is required" });
     }
 
     if (!Array.isArray(members)) {
-        res.send({ message: "Invalid request body" });
+        res.status(400).send({ message: "Invalid request body" });
     }
 
     for (let member of members) {
         if (member.email == undefined || member.role == undefined) {
-            res.send({ message: "All fields are required" });
+            res.status(400).send({ message: "All fields are required" });
         }
 
         if (member.email === "") {
-            res.send({ message: "Email is required" });
+            res.status(400).send({ message: "Email is required" });
         }
 
         if (member.role === "") {
-            res.send({ message: "Role is required" });
+            res.status(400).send({ message: "Role is required" });
         }
 
         if (clubRole[member.role.toUpperCase()] == undefined) {
-            res.send({ message: "Invalid role" });
+            res.status(400).send({ message: "Invalid role" });
         }
     }
 
@@ -198,7 +189,7 @@ router.post('/createClub', async (req, res) => {
     } catch (error) {
         // Handle the error
         console.error('Error during transaction:', error);
-        message = 'bad request'
+        res.status(400).send({ message: 'bad request' });
     } finally {
         // Ensure that the Prisma client is properly disconnected
         await prisma.$disconnect();
@@ -213,11 +204,11 @@ router.post('/createBatch', async (req, res) => {
     const batch = req.body.batch
 
     if (batch == undefined) {
-        res.send({ message: "All fields are required" });
+        res.status(400).send({ message: "All fields are required" });
     }
 
     if (batch === "") {
-        res.send({ message: "Batch is required" });
+        res.status(400).send({ message: "Batch is required" });
     }
 
     try {
@@ -232,7 +223,7 @@ router.post('/createBatch', async (req, res) => {
     catch (error) {
         // Handle the error
         console.error('Error during transaction:', error);
-        res.send({ message: 'bad request' });
+        res.status(400).send({ message: 'bad request' });
     } finally {
         // Ensure that the Prisma client is properly disconnected
         await prisma.$disconnect();
@@ -281,13 +272,14 @@ router.get('/getBatch', async (req, res) => {
 
 router.get('/getDept', async (req, res) => {
     console.log("getDept")
-
     const depts = []
-    for (let d of Object.values(dept)) {
-        depts.push(d)
+    for (let d of Object.keys(deptMapper)) {
+        depts.push({
+            value: deptMapper[d],
+            key: d
+        })
     }
-    // console.log(depts)
-
+    console.log(depts)
     res.send(depts)
 })
 
@@ -451,6 +443,62 @@ router.post("/updateClubRoles", async (req, res) => {
 
 });
 
+
+router.post("/updateRole", async (req, res) => {
+
+    console.log(req.body)
+
+    const {
+        email,
+        prevRole,
+        newRole
+    } = req.body;
+
+    if (email == undefined || prevRole == undefined || newRole == undefined) {
+        res.status(400).json({ message: "All fields are required" });
+        return;
+    }
+
+    if (email === "") {
+        res.status(400).json({ message: "Email is required" });
+        return;
+    }
+
+    if (prevRole === "") {
+        res.status(400).json({ message: "Previous Role is required" });
+        return;
+    }
+
+    if (newRole === "") {
+        res.status(400).json({ message: "New Role is required" });
+        return;
+    }
+
+    try {
+
+        const result = await changeRole(email, prevRole, newRole)
+        console.log(result)
+        if (!result.success) {
+            res.status(500).json({ message: result.msg });
+            return;
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                email: email
+            },
+            data: {
+                role: Role[newRole.toUpperCase()],
+            }
+        });
+
+        res.send({ message: "User role updated" });
+    } catch (error) {
+        console.error("Error while updating user role:", error);
+        res.status(500).json({ message: "Error!" });
+    }
+
+});
 
 
 router.use((req, res, next) => {
