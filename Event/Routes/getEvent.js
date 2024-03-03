@@ -90,10 +90,19 @@ router.post('/', async(req, res) => {
                             email:true,
                             profilePicture:true,
                         }
-                    }
+                    },
+                    savedBy: {
+                        select: {
+                            id:true,
+                            name:true,
+                            email:true,
+                            profilePicture:true,
+                        }
+                    },   
                 }
             })   
             const isParticipating = event.participatedBy.some(user => user.id === user_id);
+            const isSaved = event.savedBy.some(user => user.id === user_id);
 
             
 
@@ -101,7 +110,8 @@ router.post('/', async(req, res) => {
             event = {
                 ...event,
                 user: user,
-                isParticipating : isParticipating
+                isParticipating : isParticipating,
+                isSaved : isSaved
             }
 
             console.log(event);

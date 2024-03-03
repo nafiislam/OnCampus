@@ -49,11 +49,23 @@ app.use('/notice',notice);
 import checkLocation from './Routes/checkLocation.js';
 app.use('/checkLocation',checkLocation);
 
+import addToGoogleCalender from './Routes/addToGoogleCalender.js';
+app.use('/addToGoogleCalender',addToGoogleCalender);
+
 import participateEvent from './Routes/participateEvent.js';
 app.use('/participateEvent',participateEvent);
 
-import addToGoogleCalender from './Routes/addToGoogleCalender.js';
-app.use('/addToGoogleCalender',addToGoogleCalender);
+import myParticipatingEvents from './Routes/myParticipatingEvents.js';
+app.use('/myParticipatingEvents',myParticipatingEvents);
+
+import saveEvent from './Routes/saveEvent.js';
+app.use('/saveEvent',saveEvent);
+
+import getMySavedEvents from './Routes/getMySavedEvents.js';
+app.use('/getMySavedEvents',getMySavedEvents);
+
+import getMyCreatedEvents from './Routes/getMyCreatedEvents.js';
+app.use('/getMyCreatedEvents',getMyCreatedEvents);
 
 
 //404 error handler
