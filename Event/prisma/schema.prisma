@@ -30,9 +30,8 @@ model User {
   role                 Role           @default(USER)
   likedComments        Comment[]      @relation("LikedComments")
   ClubMember           ClubMember[]
-  session              String
+  session              String?
   batch                String
-  meritPosition        Int
   department           dept
   VotedOptions         Option[]       @relation("VotedOptions")
   reminders            Reminder[]
@@ -124,7 +123,6 @@ model Post {
   reminders       Reminder[]
   notification    Notification[]
   open            Boolean        @default(true)
-
 
   bloodInfo   BloodInfo?
   tuitionInfo TuitionInfo?
@@ -295,6 +293,7 @@ enum dept {
   Nanomaterials_and_Ceramic_Engineering
   Architecture
   Electrical_and_Electronics_Engineering
+  Urban_and_Regional_Planning
 
   @@schema("user")
 }
@@ -393,4 +392,35 @@ enum MeetingType {
   None
 
   @@schema("event")
+}
+
+model Album {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  images      Image[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@schema("user")
+}
+
+model Image {
+  id        String @id @default(uuid())
+  panorama  String
+  thumbnail String
+  name      String
+  caption   String
+  gps_lat   String
+  gps_long  String
+  gps_alt   String
+
+  links String[] @default([])
+
+  album     Album    @relation(fields: [albumId], references: [id])
+  albumId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("user")
 }

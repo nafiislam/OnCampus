@@ -111,6 +111,10 @@ model Post {
   savedBy         User[]         @relation("SavedPosts")
   viewedBy        User[]         @relation("ViewedPosts")
   intBy           User[]         @relation("IntPosts")
+
+  reportedBy      User[]         @relation("ReportedPosts")
+  reportedCount   Int            @default(0)
+  
   attachments     String[]
   attachmentNames String[]
   createdAt       DateTime       @default(now())

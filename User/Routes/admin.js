@@ -35,6 +35,7 @@ const deptMapper = {
 // })
 
 async function createStudents(startId, endId) {
+    
 
     if (startId.length != 7 || endId.length != 7) {
         return {
@@ -43,12 +44,16 @@ async function createStudents(startId, endId) {
         }
     }
 
+    console.log(startId, endId)
+
     if (isNaN(startId) || isNaN(endId)) {
         return {
             msg: "Invalid ID",
             success: false
         }
     }
+
+    
 
     if (startId.slice(0, 2) != endId.slice(0, 2)) {
         return {
@@ -71,12 +76,16 @@ async function createStudents(startId, endId) {
         }
     }
 
+    
+
     if (deptMapper[startId.slice(2, 4)] == undefined) {
         return {
             msg: "Invalid ID",
             success: false
         }
     }
+
+    
 
     const batchID = startId.slice(0, 2)
     const department = deptMapper[startId.slice(2, 4)]
@@ -89,7 +98,7 @@ async function createStudents(startId, endId) {
                     data: {
                         email: user.email,
                         department: dept[department],
-                        batch: batchID,
+                        batch: `20${batchID}`,
                     }
                 })
             }

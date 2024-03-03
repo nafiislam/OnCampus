@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/addNotice', async(req, res) => {
     try{
         console.log(req.body);
-        const {email ,admin} = req.headers;
+        const {email ,admin,cr} = req.headers;
         const {title,
             content,
             imgList,
@@ -52,6 +52,11 @@ router.post('/addNotice', async(req, res) => {
 
         if (user_id === '-1') {
             res.status(400).json({message: "User not found"});
+            return;
+        }
+
+        if(!br&&!admin){
+            res.status(401).json({message: "Not eligible to perform this action"});
             return;
         }
 
@@ -218,7 +223,7 @@ router.get("/getAllNotices", async (req, res) => {
 router.post('/updateNotice', async(req, res) => {
     try{
         console.log(req.body);
-        const {email ,admin} = req.headers;
+        const {email ,admin,br} = req.headers;
         const {title,
             content,
             imgList,
@@ -262,6 +267,11 @@ router.post('/updateNotice', async(req, res) => {
 
         if (user_id === '-1') {
             res.status(400).json({message: "User not found"});
+            return;
+        }
+
+        if(!br&&!admin){
+            res.status(401).json({message: "Not eligible to perform this action"});
             return;
         }
 
