@@ -60,6 +60,7 @@ app.use('/checkBan',checkBan);
 import analysis from'./Routes/analysis.js';
 app.use('/analysis',analysis);
 
+
 import user from './Routes/user.js';
 app.use('/', user);
 

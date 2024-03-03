@@ -393,4 +393,118 @@ router.get('/postAll', async(req, res) => {
     }
 });
 
+router.get('/eventAll', async(req, res) => {
+    try{
+        console.log(req.body);
+        const {email ,admin} = req.headers;
+        
+        if(!email){
+            res.status(401).json({message: "Unauthorized"});
+            return;
+        }
+
+        if(admin !== "true"){
+            res.status(400).json({message: "User does not have the permission to perform this action"});
+            return;
+        }
+        
+        const u = await prisma.user.findUnique({
+            where:{
+                email:email,
+                role:"ADMIN"
+            }
+        })
+        if(!u){
+            res.status(400).json({message: "User does not have the permission to perform this action"});
+            return;
+        }
+
+        const user_url = await getRegistry("user");
+        console.log(user_url);
+        const user_id_res = await axios.post(`${user_url.url}/getUserIDByEmail`, {
+            email: email,
+        });
+        const user_id = user_id_res.data.id;
+        console.log("user_id: ", user_id);
+
+        if (user_id === '-1') {
+            res.status(400).json({message: "User not found"});
+            return;
+        }
+        
+        const events = await prisma.event.findMany({
+            select:{
+                participatedBy: true,
+                savedBy:true,
+                tag:true
+            },
+        });
+        
+        var mapper = {
+            "Workshop":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Seminar":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Sports":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Competition":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Rag_concert":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Shapa_day":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Flashmob":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Cultural":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Picnic":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Tour":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Normal_Online_Event":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+            "Normal_Offline_Event":{
+                "participatedBy":0,
+                "savedBy":0,
+            },
+        }
+        
+        events.map((event) => {
+
+            mapper[event.tag].participatedBy += event.participatedBy.length;
+            mapper[event.tag].savedBy += event.savedBy.length;
+            return null;
+        });
+        // console.log(mapper);
+        
+        res.status(200).json({mapper:mapper});
+    }
+    catch(e){
+      console.log(e);
+      res.status(500).json({message: "Internal Server Error"});
+    }
+});
+
 export default router;
