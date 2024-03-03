@@ -33,6 +33,7 @@ app.all('/api/:apiName*', async (req, res) => {
     const path = req.params[0];
     console.log('path', path);
     const url = await getRegistry(apiName)
+    console.log(req.br)
     if (url) {
         axios(
             {
@@ -42,6 +43,8 @@ app.all('/api/:apiName*', async (req, res) => {
                 headers: {
                     email: req.email,
                     admin: req.admin,
+                    br: req.br,
+                    cr: req.cr
                 },
             }
         )

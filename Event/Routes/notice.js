@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/addNotice', async(req, res) => {
     try{
         console.log(req.body);
-        const {email ,admin,cr} = req.headers;
+        const {email ,admin,br} = req.headers;
         const {title,
             content,
             imgList,
