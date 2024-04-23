@@ -1,5 +1,5 @@
 ### Getting Started
-##API_GATEWAY
+## API_GATEWAY
 First, run the following command to install all dependencies:
 ```bash
 npm install
@@ -11,7 +11,7 @@ npm run Start
 
 [http://localhost:5000](http://localhost:5000) API created.
 
-##ServiceRegistry
+## ServiceRegistry
 First, run the following command to install all dependencies:
 ```bash
 npm install
@@ -23,7 +23,7 @@ npm run Start
 
 [http://localhost:5003](http://localhost:5003) API created.
 
-##User
+## User
 First, run the following command to install all dependencies:
 ```bash
 npm install
@@ -39,7 +39,7 @@ npm run Start
 
 [http://localhost:5001](http://localhost:5001) API created.
 
-##Post
+## Post
 First, run the following command to install all dependencies:
 ```bash
 npm install
@@ -55,7 +55,7 @@ npm run Start
 
 [http://localhost:5002](http://localhost:5002) API created.
 
-##Event
+## Event
 First, run the following command to install all dependencies:
 ```bash
 npm install
